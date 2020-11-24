@@ -1,0 +1,8 @@
+Gross Domestic Product (GDP) at basic prices, by industry, monthly :36100434
+Consumer Price Index (CPI), monthly, for different industries in the 13 provinces :18100004
+International Merchandise Trade by commodity, monthly :12100121
+Retail trade sales by province and territory :20100008
+Manufacturers sales, inventories, and orders, by industry :16100047
+Labour force characteristics by province, monthly :14100287
+Actual hours worked at main job, by industry, monthly :14100289
+Average weekly earnings by industry, annually :14100204
