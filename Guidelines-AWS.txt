@@ -33,5 +33,5 @@ Note :
             aws s3 cp s3://mysparks/filename.extension
 ------> "cd demo1" ----> spark-submit demo1.py (view the results)
 
-### QuickSight Visualization ###
--> Once all coding is done, S3 can be connected to QuickSight to produce visualization dashboards
+### MatplotLib / Seaborn Visualization ###  [Note -> AWS QuickSight isnt free for AWS Educate Account]
+-> To produce visualization dashboards
