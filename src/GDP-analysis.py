@@ -24,7 +24,7 @@ gdp_schema = types.StructType([
 
 def main():
 
-    gdp = spark.read.csv('../GDPreal.csv',schema=gdp_schema) #reading csv
+    gdp = spark.read.csv('GDPreal.csv',schema=gdp_schema) #reading csv
     
     checkNull = gdp.filter(gdp['REF_DATE'].isNotNull() & gdp['VALUE'].isNotNull()).withColumn('REF_DATE', to_date(gdp['REF_DATE'], 'yyyy-MM'))
     # selection of relevant columns
@@ -39,12 +39,13 @@ def main():
 
     #Cannabis production industry can be ignored as it doesnt contribute much to GDP 
     result = group1.where(group1['NAICS']!='Cannabis production [111C]').where(group1['NAICS']!='Cannabis production (unlicensed) [111CU]').where(group1['NAICS']!='Cannabis production (licensed) [111CL]')
-    result.coalesce(1).write.csv('../GDP_output', header='true', mode='overwrite') #.coalesce(1)
+
+    # eliminate industries with lower GDP per year
+    final_res = result.where(result['Total GDP Value']>100) 
+    final_res.coalesce(1).write.csv('GDP_output', header='true', mode='overwrite') 
 	
 if __name__ == '__main__':
     spark = SparkSession.builder.appName('GDP Analysis').getOrCreate()
     spark.sparkContext.setLogLevel('WARN')
     sc = spark.sparkContext
     main()
-
-
