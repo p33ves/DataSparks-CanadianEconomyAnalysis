@@ -19,22 +19,28 @@ def download_zips(line):
     if os.path.exists(download_file):
         print(f"Download skipped - {title} ")
     else:
-        with requests.get(url_path, stream=True) as response, open(download_file, 'wb') as out_file:
-            response.raise_for_status()
-            print(f"Downloading - {title}")
-            for chunk in response.iter_content(chunk_size=8192):
-                if chunk:
-                    out_file.write(chunk)
-            print(f"Download complete - {title}")
-    input_zip = zipfile.ZipFile(download_file)
-    input_file = input_zip.namelist()[0]
-    if os.path.exists(OUT_PATH + input_file):
-        print(f"Extraction skipped - {title} ")
-    else:
-        input_zip.extract(input_file, OUT_PATH)
-        print(f"Extracted {input_file} for - {title} ")
-    input_zip.close()
-    return {table_id: title}
+        try:
+            with requests.get(url_path, stream=True) as response, open(download_file, 'wb') as out_file:
+                response.raise_for_status()
+                print(f"Downloading - {title}")
+                for chunk in response.iter_content(chunk_size=8192):
+                    if chunk:
+                        out_file.write(chunk)
+                print(f"Download complete - {title}")
+        except requests.exceptions.RequestException as err:
+            return {table_id: err}
+    try:
+        input_zip = zipfile.ZipFile(download_file)
+        input_file = input_zip.namelist()[0]
+        if os.path.exists(OUT_PATH + input_file):
+            print(f"Extraction skipped - {title} ")
+        else:
+            input_zip.extract(input_file, OUT_PATH)
+            print(f"Extracted {input_file} for - {title} ")
+        input_zip.close()
+        return {table_id: "Successful"}
+    except Exception as err:
+        return {table_id: err}
 
 
 if __name__ == "__main__":
@@ -44,4 +50,4 @@ if __name__ == "__main__":
     results = pool.map(download_zips, table_list)
     pool.close()
     pool.join()
-    print("Stat_can files used in the project are : ", results)
+    print("stat_can files : ", results)
