@@ -45,8 +45,8 @@ merch_trade_schema = types.StructType([
 
 def main():
 
-    gdp = spark.read.csv('GDPreal.csv',schema=gdp_schema) #reading GDP Data csv
-    MT = spark.read.csv('MerchTrade.csv',schema=merch_trade_schema) #reading International Merchandise Trade Data csv
+    gdp = spark.read.csv('../GDPreal.csv',schema=gdp_schema) #reading GDP Data csv
+    MT = spark.read.csv('../MerchTrade.csv',schema=merch_trade_schema) #reading International Merchandise Trade Data csv
 
     
     ##################################### GDP Operations ##########################################################
