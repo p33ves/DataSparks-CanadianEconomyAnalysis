@@ -94,7 +94,7 @@ def main():
     # select only the "Customs" Basis data
     final_df = final_res.where(final_res['Basis']=='Customs')
     # for each year, by month (between Jan 2000 and Aug 2020) -> Find the Avg GDP and Avg Merch Trade Value for all Trades (imports and exports)
-    FINAL_df = final_df.groupby('REF_DATE').agg(avg('Total GDP Value').alias('Avd GDP Value'), avg('Total Merch Trade Value').alias('Avg Merch Trade Value')).orderBy('REF_DATE')
+    FINAL_df = final_df.groupby('REF_DATE').agg(avg('Total GDP Value').alias('Avg GDP Value'), avg('Total Merch Trade Value').alias('Avg Merch Trade Value')).orderBy('REF_DATE')
     FINAL_df.coalesce(1).write.csv('GDP+MT_output', header='true', mode='overwrite') ### FINAL_df-> REF_DATE, Avg GDP Value, Avg Merch Trade Value
     	
 if __name__ == '__main__':
