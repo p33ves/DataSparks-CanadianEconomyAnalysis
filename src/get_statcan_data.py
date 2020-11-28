@@ -1,6 +1,5 @@
 import requests
 import os
-import sys
 import zipfile
 
 from multiprocessing import Pool, cpu_count
