@@ -34,8 +34,8 @@ yahoo_schema = types.StructType([
 
 def main():
 
-    retail = spark.read.csv('../RetailTradeSales.csv',schema=retail_schema) #reading 'RetailTradeSales' csv Data 
-    yahoo = spark.read.csv('../YahooFinance.csv',schema=yahoo_schema) #reading seasonal stock prices from 'YahooFinance' csv Data
+    retail = spark.read.csv('RetailTradeSales.csv',schema=retail_schema) #reading 'RetailTradeSales' csv Data 
+    yahoo = spark.read.csv('YahooFinance.csv',schema=yahoo_schema) #reading seasonal stock prices from 'YahooFinance' csv Data
     #Note -> Yahoo finance data - between Feb 2000 and Sept 2020
 
     ############################ Retail Trade Operations #############################
@@ -44,7 +44,7 @@ def main():
     #filter out only "Seasonally adjusted" items, according to seasonal trading
     seasonal = notnull.filter(notnull['Adjustments']=='Seasonally adjusted')
 
-    #fetch retail data for the last 20 years between Jan 2000 and Oct 2020
+    #fetch retail data for the last 10 years between Jan 2010 and Oct 2020
     duration = seasonal.where(seasonal['REF_DATE'].between(datetime.datetime.strptime('2010-01-01', '%Y-%m-%d'), datetime.datetime.strptime('2020-10-01','%Y-%m-%d')))
 
     #Taking only the provinces for case-1, consider entire Canada for Case-2
@@ -68,8 +68,11 @@ def main():
     # Seasonal (monthly) calculations
     checkNull = yahoo.filter(yahoo['REF_DATE'].isNotNull()).withColumn('REF_DATE', to_date(yahoo['REF_DATE'], 'yyyy-MM'))
 
+    #fetch yahoo stock data for the last 10 years between Jan 2010 and Oct 2020
+    duration1 = checkNull.where(checkNull['REF_DATE'].between(datetime.datetime.strptime('2010-01-01', '%Y-%m-%d'), datetime.datetime.strptime('2020-10-01','%Y-%m-%d')))
+    
     # finding the avg monthly "highest" and "lowest" stock prices, and the Avg number of stocks traded
-    yahoo1 = checkNull.groupby('REF_DATE').agg(avg('Volume'), avg('High').alias('Avg Highest Stock'), avg('Low').alias('Avg Lowest Stock')).orderBy('REF_DATE')
+    yahoo1 = duration1.groupby('REF_DATE').agg(avg('Volume'), avg('High').alias('Avg Highest Stock'), avg('Low').alias('Avg Lowest Stock')).orderBy('REF_DATE')
     yahoo1 = yahoo1.withColumnRenamed('avg(Volume)','Avg Stock Traded')
 
     ### Yahoo_df output ###
@@ -89,5 +92,3 @@ if __name__ == '__main__':
 
 
     
-
-

@@ -55,8 +55,8 @@ def main():
     season = checkNull.where(checkNull['Seasonal adjustment']=='Seasonally adjusted at annual rates')
     seasonalGDP = season.select('REF_DATE','Seasonal adjustment','North American Industry Classification System (NAICS)','VALUE')
 
-    #fetch gdp data for the last 20 years between Jan 2000 and Oct 2020
-    duration = seasonalGDP.where(seasonalGDP['REF_DATE'].between(datetime.datetime.strptime('2000-01-01', '%Y-%m-%d'), datetime.datetime.strptime('2020-10-01','%Y-%m-%d')))
+    #fetch gdp data for the last 10 years between Jan 2010 and Oct 2020
+    duration = seasonalGDP.where(seasonalGDP['REF_DATE'].between(datetime.datetime.strptime('2010-01-01', '%Y-%m-%d'), datetime.datetime.strptime('2020-10-01','%Y-%m-%d')))
 
     # to group by the year and NAICS, to get the gdp for the  industry in that year
     group1 = duration.groupby('REF_DATE','North American Industry Classification System (NAICS)').sum('VALUE')
@@ -74,8 +74,8 @@ def main():
     season1 = checkNull1.where(checkNull1['Seasonal adjustment']=='Seasonally adjusted')
     seasonalMT = season1.select('REF_DATE','Trade','Basis','Seasonal adjustment','North American Product Classification System (NAPCS)','VALUE')
 
-    #fetch MT data for the last 20 years between Jan 2000 and Oct 2020
-    duration1 = seasonalMT.where(seasonalMT['REF_DATE'].between(datetime.datetime.strptime('2000-01-01', '%Y-%m-%d'), datetime.datetime.strptime('2020-10-01','%Y-%m-%d')))
+    #fetch MT data for the last 10 years between Jan 2010 and Oct 2020
+    duration1 = seasonalMT.where(seasonalMT['REF_DATE'].between(datetime.datetime.strptime('2010-01-01', '%Y-%m-%d'), datetime.datetime.strptime('2020-10-01','%Y-%m-%d')))
 
     # to group by the year and NAPCS, to get the Trade value
     groupMT = duration1.groupby('REF_DATE','North American Product Classification System (NAPCS)','Trade','Basis').sum('VALUE')
