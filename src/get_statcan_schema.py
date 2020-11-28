@@ -8,7 +8,7 @@ spark.sparkContext.setLogLevel('WARN')
 sc = spark.sparkContext
 
 IN_PATH = "../data/raw/statcan/"
-OUT_PATH = "../data/schema/statcan/"
+OUT_PATH = "../schema/statcan/"
 os.makedirs(OUT_PATH, exist_ok=True)
 
 

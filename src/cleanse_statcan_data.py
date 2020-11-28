@@ -9,7 +9,7 @@ sc = spark.sparkContext
 
 IN_PATH = "../data/raw/statcan/"
 OUT_PATH = "../data/clean/statcan/"
-SCHEMA_PATH = "../data/schema/statcan/"
+SCHEMA_PATH = "../schema/statcan/"
 os.makedirs(OUT_PATH, exist_ok=True)
 
 
