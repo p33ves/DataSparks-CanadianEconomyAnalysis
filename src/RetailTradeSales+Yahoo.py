@@ -2,7 +2,7 @@ import sys, datetime
 from operator import add
 from pyspark.sql.functions import col, lit
 from pyspark.sql import SparkSession, functions, types
-from pyspark.sql.functions import to_date, round, lit, avg, year
+from pyspark.sql.functions import to_date, round, avg, year
 
 retail_schema = types.StructType([
     types.StructField('REF_DATE', types.StringType()),
