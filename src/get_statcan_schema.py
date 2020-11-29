@@ -1,8 +1,9 @@
 import os
-import shutil
+import sys
 
 from pyspark.sql import SparkSession, functions, types
 
+assert sys.version_info >= (3, 5)  # make sure we have Python 3.5+
 spark = SparkSession.builder.appName('statcan data cleanse').getOrCreate()
 spark.sparkContext.setLogLevel('WARN')
 sc = spark.sparkContext
