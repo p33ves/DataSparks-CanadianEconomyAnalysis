@@ -1,4 +1,6 @@
 import sys, datetime
+from operator import add
+from pyspark.sql.functions import col, lit
 from pyspark.sql import SparkSession, functions, types
 from pyspark.sql.functions import to_date, round, lit, avg, year
 
@@ -37,6 +39,7 @@ def main():
     retail = spark.read.csv('RetailTradeSales.csv',schema=retail_schema) #reading 'RetailTradeSales' csv Data 
     yahoo = spark.read.csv('YahooFinance.csv',schema=yahoo_schema) #reading seasonal stock prices from 'YahooFinance' csv Data
     #Note -> Yahoo finance data - between Feb 2000 and Sept 2020
+
 
     ############################ Retail Trade Operations #############################
     notnull = retail.filter(retail['REF_DATE'].isNotNull() | retail['GEO'].isNotNull() | retail['VALUE'].isNotNull()).withColumn('REF_DATE', to_date(retail['REF_DATE'], 'yyyy-MM'))
@@ -80,9 +83,12 @@ def main():
 
 
     ######################### Merging Retail Trades Sales with corresponding Stocks traded (Yahoo finance) ##########
-    ### --- PENDING --- ###
+    TotalIndustryTrade = retail2.withColumn('TotalRetailTradePrice', sum(col(x) for x in retail2.columns[1:])) # to find the total Retail Trade values for all industries for that 'REF_DATE'
+    final_res = TotalIndustryTrade.join(yahoo1, TotalIndustryTrade.REF_DATE==yahoo1.REF_DATE, "inner").drop(yahoo1['REF_DATE'])
+    final_res1 = final_res.select('REF_DATE','TotalRetailTradePrice','Avg Stock Traded','Avg Highest Stock','Avg Lowest Stock').orderBy('REF_DATE')
+    final_res1.coalesce(1).write.csv('Retail+YahooStock',header=True,mode='overwrite') # Retail+YahooStock --> REF_DATE, TotalRetailTradePrice, AvgStockTraded, AvgHighestStock, AvgLowestStock
+
     
-    	
 if __name__ == '__main__':
     spark = SparkSession.builder.appName('Retail+Yahoo Analysis').getOrCreate()
     spark.sparkContext.setLogLevel('WARN')
@@ -91,4 +97,4 @@ if __name__ == '__main__':
 
 
 
-    
+  
