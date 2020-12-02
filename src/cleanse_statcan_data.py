@@ -24,15 +24,15 @@ def clean_csv(file_name):
         data_in_range = input_data.where(
             input_data['REF_DATE'].startswith('201') |
             input_data['REF_DATE'].startswith('202'))
-        if table_id == "12100121":
-            output_data = data_in_range.filter(data_in_range["Seasonal adjustment"] == "Seasonally adjusted") \
-                .coalesce(1)
-        elif table_id == "14100287":
-            output_data = data_in_range.filter(data_in_range["Data type"] == "Seasonally adjusted").coalesce(1)
-        elif table_id == "20100008":
-            output_data = data_in_range.filter(data_in_range["Adjustments"] == "Seasonally adjusted").coalesce(1)
-        else:
-            output_data = data_in_range.coalesce(1)
+        # if table_id == "12100121":
+        #     output_data = data_in_range.filter(data_in_range["Seasonal adjustment"] == "Seasonally adjusted") \
+        #         .coalesce(1)
+        # elif table_id == "14100287":
+        #     output_data = data_in_range.filter(data_in_range["Data type"] == "Seasonally adjusted").coalesce(1)
+        # elif table_id == "20100008":
+        #     output_data = data_in_range.filter(data_in_range["Adjustments"] == "Seasonally adjusted").coalesce(1)
+        # else:
+        output_data = data_in_range.coalesce(1)
         output_data.write \
             .option("header", "true") \
             .csv(OUT_PATH + table_id)
