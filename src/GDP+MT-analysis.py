@@ -45,8 +45,8 @@ merch_trade_schema = types.StructType([
 
 def main():
 
-    gdp = spark.read.csv('../GDPreal.csv',schema=gdp_schema) #reading GDP Data csv
-    MT = spark.read.csv('../MerchTrade.csv',schema=merch_trade_schema) #reading International Merchandise Trade Data csv
+    gdp = spark.read.csv('../data/clean/statcan/36100434/GDP-real.csv',schema=gdp_schema) #reading GDP Data csv
+    MT = spark.read.csv('../data/clean/statcan/12100121/MerchTrade.csv',schema=merch_trade_schema) #reading International Merchandise Trade Data csv
 
     
     ##################################### GDP Operations ##########################################################
@@ -66,7 +66,7 @@ def main():
     result = group1.where(group1['NAICS']!='Cannabis production [111C]').where(group1['NAICS']!='Cannabis production (unlicensed) [111CU]').where(group1['NAICS']!='Cannabis production (licensed) [111CL]')
 
     # eliminate industries with lower GDP per year
-    GDP_res = result.where(result['Total GDP Value']>100)
+    GDP_res = result.where(result['Total GDP Value']>100).orderBy('REF_DATE')
 
     #################################################### Merch Trade Operations #########################################
     checkNull1 = MT.filter(MT['REF_DATE'].isNotNull() & MT['VALUE'].isNotNull()).withColumn('REF_DATE', to_date(MT['REF_DATE'], 'yyyy-MM'))
@@ -83,11 +83,11 @@ def main():
     groupMT3 = groupMT2.withColumnRenamed('REF_DATE','YEAR')
 
     # eliminate industries with lower MT values per year
-    MT_res = groupMT3.where(groupMT2['Total Merch Trade Value']>100)
+    MT_res = groupMT3.where(groupMT2['Total Merch Trade Value']>100).orderBy('YEAR')
 
     # to save final results of GDP and MT operations in 2 different folders
-    GDP_res.coalesce(1).write.csv('GDP_output', header='true', mode='overwrite') ### GDP_output-> REF_DATE, NAICS, Total GDP Value
-    MT_res.coalesce(1).write.csv('MT_output', header='true', mode='overwrite') ### MT_output-> YEAR, NAPCS, Trade, Basis, Total Merch Trade Value
+    GDP_res.coalesce(1).write.csv('../OUTPUT-Folder/GDP_output', header='true', mode='overwrite') ### GDP_output-> REF_DATE, NAICS, Total GDP Value
+    MT_res.coalesce(1).write.csv('../OUTPUT-Folder/MT_output', header='true', mode='overwrite') ### MT_output-> YEAR, NAPCS, Trade, Basis, Total Merch Trade Value
 
     ########### to join GDP and MT dataframes based on the 'REF_DATE' -------------> Final Goal (for visualization) ################
     final_res = GDP_res.join(MT_res, GDP_res.REF_DATE==MT_res.YEAR, "inner").drop(MT_res['YEAR']) # avoid duplication of "YEAR" column
@@ -95,7 +95,7 @@ def main():
     final_df = final_res.where(final_res['Basis']=='Customs')
     # for each year, by month (between Jan 2000 and Aug 2020) -> Find the Avg GDP and Avg Merch Trade Value for all Trades (imports and exports)
     FINAL_df = final_df.groupby('REF_DATE').agg(avg('Total GDP Value').alias('Avg GDP Value'), avg('Total Merch Trade Value').alias('Avg Merch Trade Value')).orderBy('REF_DATE')
-    FINAL_df.coalesce(1).write.csv('GDP+MT_output', header='true', mode='overwrite') ### FINAL_df-> REF_DATE, Avg GDP Value, Avg Merch Trade Value
+    FINAL_df.coalesce(1).write.csv('../OUTPUT-Folder/GDP+MT_output', header='true', mode='overwrite') ### FINAL_df-> REF_DATE, Avg GDP Value, Avg Merch Trade Value
     	
 if __name__ == '__main__':
     spark = SparkSession.builder.appName('GDP+MT Analysis').getOrCreate()
