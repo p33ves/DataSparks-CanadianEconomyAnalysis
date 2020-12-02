@@ -36,10 +36,9 @@ yahoo_schema = types.StructType([
 
 def main():
 
-    retail = spark.read.csv('../RetailTradeSales.csv',schema=retail_schema) #reading 'RetailTradeSales' csv Data 
-    yahoo = spark.read.csv('../YahooFinance.csv',schema=yahoo_schema) #reading seasonal stock prices from 'YahooFinance' csv Data
-    #Note -> Yahoo finance data - between Feb 2000 and Sept 2020
-
+    retail = spark.read.csv('../data/clean/statcan/20100008/Retail-trade-sales.csv',schema=retail_schema) #reading 'RetailTradeSales' csv Data 
+    yahoo = spark.read.csv('../data/YahooFinance.csv',schema=yahoo_schema) #reading seasonal stock prices from 'YahooFinance' csv Data
+    
 
     ############################ Retail Trade Operations #############################
     notnull = retail.filter(retail['REF_DATE'].isNotNull() | retail['GEO'].isNotNull() | retail['VALUE'].isNotNull()).withColumn('REF_DATE', to_date(retail['REF_DATE'], 'yyyy-MM'))
@@ -62,8 +61,8 @@ def main():
     retail2 = retail2.drop('Cannabis stores [453993]','Department stores [4521]','Other general merchandise stores [4529]')
     
     ### Retail_df output ###
-    retail1.coalesce(1).write.csv('Retail1_output',header=True,mode='overwrite') # Province-wise Retail Trade values
-    retail2.coalesce(1).write.csv('Retail2_output',header=True,mode='overwrite') # Industry-wise Retail Trade values for all provinces 
+    retail1.coalesce(1).write.csv('../OUTPUT-Folder/Retail1_output',header=True,mode='overwrite') # Province-wise Retail Trade values
+    retail2.coalesce(1).write.csv('../OUTPUT-Folder/Retail2_output',header=True,mode='overwrite') # Industry-wise Retail Trade values for all provinces 
 
 
 
@@ -79,14 +78,14 @@ def main():
     yahoo1 = yahoo1.withColumnRenamed('avg(Volume)','Avg Stock Traded')
 
     ### Yahoo_df output ###
-    yahoo1.coalesce(1).write.csv('Yahoo_output',header=True,mode='overwrite') # Yahoo_output -> REF_DATE, Avg Volume, Avg Highest Stock, Avg Lowest Stock
+    yahoo1.coalesce(1).write.csv('../OUTPUT-Folder/Yahoo_output',header=True,mode='overwrite') # Yahoo_output -> REF_DATE, Avg Volume, Avg Highest Stock, Avg Lowest Stock
 
 
     ######################### Merging Retail Trades Sales with corresponding Stocks traded (Yahoo finance) ##########
     TotalIndustryTrade = retail2.withColumn('TotalRetailTradePrice', sum(col(x) for x in retail2.columns[1:])) # to find the total Retail Trade values for all industries for that 'REF_DATE'
     final_res = TotalIndustryTrade.join(yahoo1, TotalIndustryTrade.REF_DATE==yahoo1.REF_DATE, "inner").drop(yahoo1['REF_DATE'])
     final_res1 = final_res.select('REF_DATE','TotalRetailTradePrice','Avg Stock Traded','Avg Highest Stock','Avg Lowest Stock').orderBy('REF_DATE')
-    final_res1.coalesce(1).write.csv('Retail+YahooStock',header=True,mode='overwrite') # Retail+YahooStock --> REF_DATE, TotalRetailTradePrice, AvgStockTraded, AvgHighestStock, AvgLowestStock
+    final_res1.coalesce(1).write.csv('../OUTPUT-Folder/Retail+YahooStock',header=True,mode='overwrite') # Retail+YahooStock --> REF_DATE, TotalRetailTradePrice, AvgStockTraded, AvgHighestStock, AvgLowestStock
 
     
 if __name__ == '__main__':
