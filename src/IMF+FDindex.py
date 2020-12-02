@@ -62,8 +62,8 @@ FD - financial development (normalized values)
 
 def main():
 
-    imf = spark.read.csv('Canada-IMF.csv',schema=IMF_schema) # reading IMF Macroeconomic csv data
-    fd = spark.read.csv('FDindex-AllCountries.csv',schema=FDindex_schema) # reading FDindex csv data
+    imf = spark.read.csv('../data/Canada-IMF.csv',schema=IMF_schema) # reading IMF Macroeconomic csv data
+    fd = spark.read.csv('../data/FDindex-AllCountries.csv',schema=FDindex_schema) # reading FDindex csv data
 
 
     # to transpose a dataframe -> interchange rows & columns
@@ -86,7 +86,7 @@ def main():
     imf2 = spark.createDataFrame(df) # spark df
 
     # saving the output of imf1
-    imf2.coalesce(1).write.csv('IMF_output',header=True,mode='overwrite')
+    imf2.coalesce(1).write.csv('../OUTPUT-Folder/IMF_output',header=True,mode='overwrite')
     
     
     ##################################### FDindex Operations #######################################################
@@ -99,7 +99,7 @@ def main():
     fd1 = canada.where(canada['year'].between('2010','2018')).orderBy('year')
     fd_res = TransposeDF(fd1, ["FD", "FI", "FM", "FID", "FIA", "FIE", "FMD", "FMA", "FME"], "year")
     # saving the output of fd_res
-    fd_res.coalesce(1).write.csv('FDindex_output',header=True,mode='overwrite')        
+    fd_res.coalesce(1).write.csv('../OUTPUT-Folder/FDindex_output',header=True,mode='overwrite')        
 
 
     ######### PENDING --- ML PREDICTION ###########
@@ -115,6 +115,4 @@ if __name__ == '__main__':
 
 
 
-    
-
-
+  
