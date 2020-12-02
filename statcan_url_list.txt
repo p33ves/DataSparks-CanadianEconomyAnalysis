@@ -8,3 +8,4 @@ Actual hours worked at main job, by industry, monthly :14100289
 Average weekly earnings by industry, annually :14100204
 TSX Statistics :10100125
 Business leading indicators for Canada :33100111
+Detailed preliminary information on confirmed cases of COVID-19 (Revised), Public Health Agency of Canada :13100781
