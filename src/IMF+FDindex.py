@@ -101,11 +101,6 @@ def main():
     # saving the output of fd_res
     fd_res.coalesce(1).write.csv('../OUTPUT-Folder/FDindex_output',header=True,mode='overwrite')        
 
-
-    ######### PENDING --- ML PREDICTION ###########
-    # for imf2 -> preict for 2020, 2021
-    # for fd_res -> predict for 2019, 2020, 2021
-
      	
 if __name__ == '__main__':
     spark = SparkSession.builder.appName('IMF+FDindex Analysis').getOrCreate()
