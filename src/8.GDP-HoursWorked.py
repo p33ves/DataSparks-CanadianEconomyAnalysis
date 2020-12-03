@@ -45,14 +45,6 @@ hours_schema = types.StructType([
     types.StructField('TERMINATED', types.StringType()),
     types.StructField('DECIMALS', types.StringType()),
 ])
-def get_kv(data):
-	return (data['REF_DATE'], (data['NAICS'], data['GDP_VALUE']))
-	
-def convert_industry(data1, data2):
-	if(data1[0] == 'Wholesale trade' and data2[0] == 'Retail trade'):
-		return ('Wholesale and retail trade', mean(int(data1[2]),int(data2[2])))
-	else:
-		return data1
 
 def main():
 
