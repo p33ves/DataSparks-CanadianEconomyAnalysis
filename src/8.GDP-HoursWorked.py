@@ -57,7 +57,7 @@ def convert_industry(data1, data2):
 def main():
 
 	########################Processing GDP Data##################################
-	gdp_df = spark.read.csv('/home/at/project/GDP.csv', schema=gdp_schema)
+	gdp_df = spark.read.csv('../data/clean/statcan/GDP.csv', schema=gdp_schema)
 
 	#filter out null values for required columns
 	gdp_notnull_df = gdp_df.filter(gdp_df['REF_DATE'].isNotNull() | gdp_df['GEO'].isNotNull() | gdp_df['VALUE'].isNotNull())
@@ -79,7 +79,7 @@ def main():
 
 
 	##############Processing Actual Hours Worked Data#####################################
-	hours_df = spark.read.csv('/home/at/project/hours-worked.csv', schema=hours_schema)
+	hours_df = spark.read.csv('../data/clean/statcan/hours-worked.csv', schema=hours_schema)
 
 	#Filter Null rows if fields 'REF_DATE','GEO' or 'VALUE' is Null
 	hours_notnull_df = hours_df.filter(hours_df['REF_DATE'].isNotNull() | hours_df['GEO'].isNotNull() | hours_df['VALUE'].isNotNull())
@@ -139,12 +139,12 @@ def main():
 	#Get average values of annual GDP, Actual Hours Worked, and Labour Productivity, Industry-wise
 	result_df = labour_prod.groupby(year('REF_DATE').alias('YEAR'),'NAICS').agg(avg('HOURS_WORKED').alias('HOURS_WORKED'), avg('GDP_VALUE').alias('GDP_VALUE'), avg('labour_productivity').alias('labour_productivity')).orderBy('YEAR')
 
-	result_df.write.csv('/home/at/project/GDP_hours_worked_output', header='true', mode='overwrite')
+	result_df.write.csv('../OUTPUT-Folder/GDP_hours_worked_output', header='true', mode='overwrite')
 
 	#Restructure the dataframe for yearly Labour Productivity values for 18 different industries in Canada
 	labour_ip = labour_prod.groupby(year('REF_DATE').alias('YEAR')).pivot('NAICS').agg(avg('labour_productivity').alias('labour_productivity')).orderBy('YEAR')
 	
-	labour_ip.write.csv('/home/at/project/Labour_productivity_output', header='true', mode='overwrite')
+	labour_ip.write.csv('../OUTPUT-Folder/Labour_productivity_output', header='true', mode='overwrite')
 
 if __name__ == '__main__':
     spark = SparkSession.builder.appName('CPI Analysis').getOrCreate()
