@@ -25,7 +25,7 @@ cpi_schema = types.StructType([
 
 	
 def main():
-	cpi_df = spark.read.csv('../data/clean/Canada_CPI.csv', schema=cpi_schema)
+	cpi_df = spark.read.csv('../data/clean/statcan/Canada_CPI.csv', schema=cpi_schema)
 
 	#filter out null values for required columns
 	notnull_df = cpi_df.filter(cpi_df['REF_DATE'].isNotNull() | cpi_df['GEO'].isNotNull() | cpi_df['VALUE'].isNotNull())
