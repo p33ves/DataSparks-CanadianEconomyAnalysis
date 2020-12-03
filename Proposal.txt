@@ -25,8 +25,6 @@ https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1210012101
 https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=2010000801
 -> Manufacturers’ sales, inventories, and orders, by industry :
 https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1610004701
--> Labour force characteristics by province, monthly :
-https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028703
 -> Actual hours worked at main job, by industry, monthly :
 https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028901
 -> Average weekly earnings by industry, annually :
@@ -91,7 +89,6 @@ https://www150.statcan.gc.ca/t1/tbl1/en/cv.action?pid=2410000501
 
 Monthly survey of food services and drinking places 
 https://www150.statcan.gc.ca/t1/tbl1/en/cv.action?pid=2110001901
-
 
 
 
