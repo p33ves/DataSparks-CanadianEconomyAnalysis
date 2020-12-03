@@ -25,7 +25,7 @@ cpi_schema = types.StructType([
 
 	
 def main():
-	cpi_df = spark.read.csv('../Canada_CPI.csv', schema=cpi_schema)
+	cpi_df = spark.read.csv('../data/clean/Canada_CPI.csv', schema=cpi_schema)
 
 	#filter out null values for required columns
 	notnull_df = cpi_df.filter(cpi_df['REF_DATE'].isNotNull() | cpi_df['GEO'].isNotNull() | cpi_df['VALUE'].isNotNull())
@@ -45,7 +45,7 @@ def main():
 	#take the yearly avg of cpi values for each province and restructure the dataframe based on provinces
 	result_cpi_df = province_df.groupby(year('REF_DATE').alias('YEAR')).pivot('GEO').agg(round(avg('VALUE'),2)).orderBy('YEAR')
 
-	result_cpi_df.write.csv('../Canada_CPI_output', header='true', mode='overwrite')
+	result_cpi_df.write.csv('../OUTPUT-Folder/Canada_CPI_output', header='true', mode='overwrite')
 	
 if __name__ == '__main__':
     spark = SparkSession.builder.appName('CPI Analysis').getOrCreate()
