@@ -7,49 +7,22 @@ import datetime
 
 #Comparing the Retail Trade Sales vs its GDP over the last 10 years
 
-gdp_schema = types.StructType([
-    types.StructField('REF_DATE', types.StringType()),
-    types.StructField('GEO', types.StringType()),
-    types.StructField('DGUID', types.StringType()),
-    types.StructField('Seasonal adjustment', types.StringType()),
-    types.StructField('Prices',types.StringType()),
-    types.StructField('North American Industry Classification System (NAICS)', types.StringType()),
-    types.StructField('UOM', types.StringType()),
-    types.StructField('UOM_ID', types.StringType()),
-    types.StructField('SCALAR_FACTOR',types.StringType()),
-    types.StructField('SCALAR_ID', types.StringType()),
-    types.StructField('VECTOR', types.StringType()),
-    types.StructField('COORDINATE', types.StringType()),
-    types.StructField('VALUE', types.StringType()),
-    types.StructField('STATUS', types.StringType()),
-    types.StructField('SYMBOL', types.StringType()),
-    types.StructField('TERMINATED', types.StringType()),
-    types.StructField('DECIMALS', types.StringType()),
-])
-
-trade_sales_schema = types.StructType([
-    types.StructField('REF_DATE', types.StringType()),
-    types.StructField('GEO', types.StringType()),
-    types.StructField('DGUID', types.StringType()),
-    types.StructField('North American Industry Classification System (NAICS)', types.StringType()),
-    types.StructField('Adjustments', types.StringType()),
-    types.StructField('UOM', types.StringType()),
-    types.StructField('UOM_ID', types.StringType()),
-    types.StructField('SCALAR_FACTOR',types.StringType()),
-    types.StructField('SCALAR_ID', types.StringType()),
-    types.StructField('VECTOR', types.StringType()),
-    types.StructField('COORDINATE', types.StringType()),
-    types.StructField('VALUE', types.StringType()),
-    types.StructField('STATUS', types.StringType()),
-    types.StructField('SYMBOL', types.StringType()),
-    types.StructField('TERMINATED', types.StringType()),
-    types.StructField('DECIMALS', types.StringType()),
-])
-
+IN_PATH = "../data/clean/statcan/"
+PROCESSED_PATH = "../data/processed/statcan/"
+OUT_PATH = "../OUTPUT-Folder/"
+INPUT_SCHEMA_PATH = "../schema/statcan/"
+OUTPUT_SCHEMA_PATH = "../schema/processed/"
+gdp_id = "36100434"
+trade_id = "20100008"
+os.makedirs(OUT_PATH, exist_ok=True)
+os.makedirs(OUTPUT_SCHEMA_PATH, exist_ok=True)
+gdp_schema = json.load(open(INPUT_SCHEMA_PATH + gdp_id + ".json"))
+trade_sales_schema = json.load(open(INPUT_SCHEMA_PATH + trade_id + ".json"))
 def main():
 
 	########################Processing GDP Data##################################
-	gdp_df = spark.read.csv('../data/clean/statcan/GDP.csv', schema=gdp_schema)
+	gdp_df = spark.read.csv(IN_PATH + gdp_id + '/*.csv',
+                         schema=types.StructType.fromJson(gdp_schema)) 
 
 	#filter out null values for required columns
 	gdp_notnull_df = gdp_df.filter(gdp_df['REF_DATE'].isNotNull() | gdp_df['GEO'].isNotNull() | gdp_df['VALUE'].isNotNull())
@@ -80,7 +53,8 @@ def main():
 	
 	
 	##############Processing Retail Trade Sales Data#####################################
-	trade_sales_df = spark.read.csv('../data/clean/statcan/retailtradesales.csv', schema=trade_sales_schema)
+	trade_sales_df = spark.read.csv(IN_PATH + trade_id + '/*.csv',
+                         schema=types.StructType.fromJson(trade_sales_schema)) 
 
 	#Filter Null rows if fields 'REF_DATE','GEO' or 'VALUE' is Null
 	trade_notnull_df = trade_sales_df.filter(trade_sales_df['REF_DATE'].isNotNull() | trade_sales_df['GEO'].isNotNull() | trade_sales_df['VALUE'].isNotNull())
