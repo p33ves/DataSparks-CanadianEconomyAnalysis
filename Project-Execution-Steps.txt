@@ -12,3 +12,5 @@ STEPS FOR BIG DATA PROJECT EXECUTION:
 6] spark-submit 6.IMF+FDindex---pending
 7] spark-submit 7.CPI-analysis.py
 8] spark-submit 8.GDP-HoursWorked.py
+9] spark-submit 9.TSX+Business.py
+10] spark-submit 10.RetailTrade-GDPvsSales.py
