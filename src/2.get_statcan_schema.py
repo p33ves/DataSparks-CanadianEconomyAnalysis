@@ -1,16 +1,16 @@
 import os
 import sys
 
-from pyspark.sql import SparkSession, functions, types
+from pyspark.sql import SparkSession
 
 assert sys.version_info >= (3, 5)  # make sure we have Python 3.5+
-spark = SparkSession.builder.appName('statcan data cleanse').getOrCreate()
+spark = SparkSession.builder.appName('statcan data schema creation').getOrCreate()
 spark.sparkContext.setLogLevel('WARN')
 sc = spark.sparkContext
 
 IN_PATH = "../data/raw/statcan/"
-OUT_PATH = "../schema/statcan/"
-os.makedirs(OUT_PATH, exist_ok=True)
+SCHEMA_PATH = "../schema/statcan/"
+os.makedirs(SCHEMA_PATH, exist_ok=True)
 
 
 def get_schema(file_name):
@@ -18,7 +18,7 @@ def get_schema(file_name):
     try:
         input_data = spark.read.option("header", "true") \
             .csv(file_name, inferSchema=True)
-        with open(OUT_PATH + table_id + ".json", 'w') as out_file:
+        with open(SCHEMA_PATH + table_id + ".json", 'w') as out_file:
             out_file.write(input_data.schema.json())
         return {table_id: "Successful"}
     except Exception as err:

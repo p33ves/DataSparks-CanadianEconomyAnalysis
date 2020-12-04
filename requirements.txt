@@ -13,7 +13,6 @@ h5py            2.10.0
 idna            2.10
 iniconfig       1.1.1
 mock            4.0.2
-multiprocess    0.70.11.1
 numexpr         2.7.1
 numpy           1.19.3
 packaging       20.4

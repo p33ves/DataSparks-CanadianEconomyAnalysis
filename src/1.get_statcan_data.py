@@ -1,9 +1,15 @@
 import requests
 import os
+import sys
 import zipfile
 
-from multiprocessing import Pool, cpu_count
 from stats_can import scwds
+from pyspark.sql import SparkSession
+
+assert sys.version_info >= (3, 5)  # make sure we have Python 3.5+
+spark = SparkSession.builder.appName('statcan data download').getOrCreate()
+spark.sparkContext.setLogLevel('WARN')
+sc = spark.sparkContext
 
 OUT_PATH = "../data/raw/statcan/"
 os.makedirs(OUT_PATH, exist_ok=True)
@@ -43,10 +49,6 @@ def download_zips(line):
 
 
 if __name__ == "__main__":
-    print("There are {} CPUs on this machine ".format(cpu_count()))
-    pool = Pool(cpu_count())
-    table_list = open('../statcan_url_list.txt', 'r').readlines()
-    results = pool.map(download_zips, table_list)
-    pool.close()
-    pool.join()
-    print("stat_can files : ", results)
+    table_list = sc.parallelize(open('../statcan_url_list.txt', 'r').readlines())
+    results = table_list.map(download_zips).collect()
+    print("stat_can files download results are: ", results)
