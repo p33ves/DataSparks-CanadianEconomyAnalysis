@@ -70,6 +70,7 @@ def main():
     groupMT3 = groupMT2.withColumnRenamed('REF_DATE', 'YEAR')
 
     # eliminate industries with lower MT values per year
+    """
     MT_res = groupMT3.where(groupMT2['Total Merch Trade Value'] > 100).orderBy('YEAR')
 
     # to save final results of GDP and MT operations in 2 different folders
@@ -82,7 +83,11 @@ def main():
     MT_res.coalesce(1).write.csv(PROCESSED_PATH+mt_id, header='true',
                                  mode='overwrite')  # MT_output-> YEAR, NAPCS, Trade, Basis, Total Merch Trade Value
     # endregion
+    """
+    GDP_res.coalesce(1).write.csv('../OUTPUT-Folder/GDP_output', header='true', mode='overwrite') ### GDP_output-> REF_DATE, NAICS, Total GDP Value
+    MT_res.coalesce(1).write.csv('../OUTPUT-Folder/MT_output', header='true', mode='overwrite') ### MT_output-> YEAR, NAPCS, Trade, Basis, Total Merch Trade Value
 
+    
     # region Join GDP and MT dataframes based on the 'REF_DATE' -------------> Final Goal (for visualization)
     final_res = GDP_res.join(MT_res, GDP_res.REF_DATE == MT_res.YEAR, "inner").\
         drop(MT_res['YEAR'])  # avoid duplication of "YEAR" column
@@ -96,11 +101,14 @@ def main():
         .orderBy('REF_DATE')
 
     # FINAL_df-> REF_DATE, Avg GDP Value, Avg Merch Trade Value
+    """
     with open(OUTPUT_SCHEMA_PATH + "GDP+MT_output.json", 'w') as out_file:
         out_file.write(FINAL_df.schema.json())
     FINAL_df.coalesce(1).\
         write.csv(OUTPUT_SCHEMA_PATH+'GDP+MT_output', header='true', mode='overwrite')
     # endregion
+    """
+    FINAL_df.coalesce(1).write.csv('.../OUTPUT-Folder/GDP+MT_output', header='true', mode='overwrite') 
 
 
 if __name__ == '__main__':
