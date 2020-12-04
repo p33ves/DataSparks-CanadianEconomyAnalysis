@@ -7,49 +7,23 @@ import datetime
 
 #Both the Tables have data for Canada for industries and not province-wise
 
-gdp_schema = types.StructType([
-    types.StructField('REF_DATE', types.StringType()),
-    types.StructField('GEO', types.StringType()),
-    types.StructField('DGUID', types.StringType()),
-    types.StructField('Seasonal adjustment', types.StringType()),
-    types.StructField('Prices',types.StringType()),
-    types.StructField('North American Industry Classification System (NAICS)', types.StringType()),
-    types.StructField('UOM', types.StringType()),
-    types.StructField('UOM_ID', types.StringType()),
-    types.StructField('SCALAR_FACTOR',types.StringType()),
-    types.StructField('SCALAR_ID', types.StringType()),
-    types.StructField('VECTOR', types.StringType()),
-    types.StructField('COORDINATE', types.StringType()),
-    types.StructField('VALUE', types.StringType()),
-    types.StructField('STATUS', types.StringType()),
-    types.StructField('SYMBOL', types.StringType()),
-    types.StructField('TERMINATED', types.StringType()),
-    types.StructField('DECIMALS', types.StringType()),
-])
-
-hours_schema = types.StructType([
-    types.StructField('REF_DATE', types.StringType()),
-    types.StructField('GEO', types.StringType()),
-    types.StructField('DGUID', types.StringType()),
-	types.StructField('North American Industry Classification System (NAICS)', types.StringType()),
-    types.StructField('Statistics', types.StringType()),
-    types.StructField('UOM', types.StringType()),
-    types.StructField('UOM_ID', types.StringType()),
-    types.StructField('SCALAR_FACTOR',types.StringType()),
-    types.StructField('SCALAR_ID', types.StringType()),
-    types.StructField('VECTOR', types.StringType()),
-    types.StructField('COORDINATE', types.StringType()),
-    types.StructField('VALUE', types.StringType()),
-    types.StructField('STATUS', types.StringType()),
-    types.StructField('SYMBOL', types.StringType()),
-    types.StructField('TERMINATED', types.StringType()),
-    types.StructField('DECIMALS', types.StringType()),
-])
+IN_PATH = "../data/clean/statcan/"
+PROCESSED_PATH = "../data/processed/statcan/"
+OUT_PATH = "../OUTPUT-Folder/"
+INPUT_SCHEMA_PATH = "../schema/statcan/"
+OUTPUT_SCHEMA_PATH = "../schema/processed/"
+gdp_id = "36100434"
+hrs_id = "14100289"
+os.makedirs(OUT_PATH, exist_ok=True)
+os.makedirs(OUTPUT_SCHEMA_PATH, exist_ok=True)
+gdp_schema = json.load(open(INPUT_SCHEMA_PATH + gdp_id + ".json"))
+hours_schema = json.load(open(INPUT_SCHEMA_PATH + hrs_id + ".json"))
 
 def main():
 
 	########################Processing GDP Data##################################
-	gdp_df = spark.read.csv('../data/clean/statcan/GDP.csv', schema=gdp_schema)
+	gdp_df = spark.read.csv(IN_PATH + gdp_id + '/*.csv',
+                         schema=types.StructType.fromJson(gdp_schema))
 
 	#filter out null values for required columns
 	gdp_notnull_df = gdp_df.filter(gdp_df['REF_DATE'].isNotNull() | gdp_df['GEO'].isNotNull() | gdp_df['VALUE'].isNotNull())
@@ -71,7 +45,8 @@ def main():
 
 
 	##############Processing Actual Hours Worked Data#####################################
-	hours_df = spark.read.csv('../data/clean/statcan/hours-worked.csv', schema=hours_schema)
+	hours_df = spark.read.csv(IN_PATH + hrs_id + '/*.csv',
+                         schema=types.StructType.fromJson(hours_schema))
 
 	#Filter Null rows if fields 'REF_DATE','GEO' or 'VALUE' is Null
 	hours_notnull_df = hours_df.filter(hours_df['REF_DATE'].isNotNull() | hours_df['GEO'].isNotNull() | hours_df['VALUE'].isNotNull())
