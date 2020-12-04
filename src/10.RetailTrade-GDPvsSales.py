@@ -55,8 +55,8 @@ def main():
 	#filter out null values for required columns
 	gdp_notnull_df = gdp_df.filter(gdp_df['REF_DATE'].isNotNull() | gdp_df['GEO'].isNotNull() | gdp_df['VALUE'].isNotNull())
 
-	#filter out "Trading-day adjusted" values only from 'Seasonal adjustment' column
-	gdp_seasonal_df = gdp_notnull_df.filter(gdp_notnull_df['Seasonal adjustment'] == lit('Trading-day adjusted'))
+	#filter out "Seasonally adjusted at annual rates" values only from 'Seasonal adjustment' column
+	gdp_seasonal_df = gdp_notnull_df.filter(gdp_notnull_df['Seasonal adjustment'] == lit('Seasonally adjusted at annual rates'))
 
 	#fetch only required columns
 	gdp = gdp_seasonal_df.select('REF_DATE',(gdp_seasonal_df['North American Industry Classification System (NAICS)']).alias('NAICS'),(gdp_seasonal_df['VALUE']).alias('GDP_VALUE'))
