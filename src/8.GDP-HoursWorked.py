@@ -2,7 +2,7 @@ import sys
 assert sys.version_info >= (3, 5) # make sure we have Python 3.5+
 
 from pyspark.sql import SparkSession, functions, types
-from pyspark.sql.functions import to_date,lit,year,avg,round,split,when
+from pyspark.sql.functions import to_date,lit,year,avg,split
 import datetime
 
 #Both the Tables have data for Canada for industries and not province-wise
