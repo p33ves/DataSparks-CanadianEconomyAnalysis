@@ -18,6 +18,8 @@ os.makedirs(OUT_PATH, exist_ok=True)
 os.makedirs(OUTPUT_SCHEMA_PATH, exist_ok=True)
 gdp_schema = json.load(open(INPUT_SCHEMA_PATH + gdp_id + ".json"))
 trade_sales_schema = json.load(open(INPUT_SCHEMA_PATH + trade_id + ".json"))
+
+
 def main():
 
 	########################Processing GDP Data##################################
