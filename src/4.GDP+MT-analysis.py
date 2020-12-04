@@ -23,7 +23,7 @@ def main():
 
     # region GDP Operations
     checkNull = gdp.filter(
-        gdp['REF_DATE'].isNotNull() & gdp['VALUE'].isNotNull())\
+        gdp['REF_DATE'].isNotNull() & gdp['VALUE'].isNotNull()) \
         .withColumn('REF_DATE', to_date(gdp['REF_DATE'], 'yyyy-MM'))
 
     # selection of relevant columns which are 'seasonally adjusted at annual rates'
@@ -37,7 +37,7 @@ def main():
 
     # to group by the year and NAICS, to get the gdp for the  industry in that year
     group1 = duration.groupby('REF_DATE', 'North American Industry Classification System (NAICS)').sum('VALUE')
-    group1 = group1.withColumnRenamed('North American Industry Classification System (NAICS)', 'NAICS')\
+    group1 = group1.withColumnRenamed('North American Industry Classification System (NAICS)', 'NAICS') \
         .withColumnRenamed('sum(VALUE)', 'Total GDP Value')
 
     # Cannabis production industry can be ignored as it doesnt contribute much to GDP
@@ -50,7 +50,7 @@ def main():
     # endregion
 
     # region Merch Trade Operations
-    checkNull1 = MT.filter(MT['REF_DATE'].isNotNull() & MT['VALUE'].isNotNull())\
+    checkNull1 = MT.filter(MT['REF_DATE'].isNotNull() & MT['VALUE'].isNotNull()) \
         .withColumn('REF_DATE', to_date(MT['REF_DATE'], 'yyyy-MM'))
 
     # select only seasonally adjusted merch rates, and then select relevant columns
@@ -70,26 +70,21 @@ def main():
     groupMT3 = groupMT2.withColumnRenamed('REF_DATE', 'YEAR')
 
     # eliminate industries with lower MT values per year
-    """
     MT_res = groupMT3.where(groupMT2['Total Merch Trade Value'] > 100).orderBy('YEAR')
+    # endregion
 
     # to save final results of GDP and MT operations in 2 different folders
     with open(OUTPUT_SCHEMA_PATH + gdp_id + ".json", 'w') as out_file:
         out_file.write(GDP_res.schema.json())
-    GDP_res.coalesce(1).write.csv(PROCESSED_PATH+gdp_id, header='true',
+    GDP_res.coalesce(1).write.csv(OUT_PATH + 'GDP_output', header='true',
                                   mode='overwrite')  # GDP_output-> REF_DATE, NAICS, Total GDP Value
     with open(OUTPUT_SCHEMA_PATH + mt_id + ".json", 'w') as out_file:
         out_file.write(MT_res.schema.json())
-    MT_res.coalesce(1).write.csv(PROCESSED_PATH+mt_id, header='true',
+    MT_res.coalesce(1).write.csv(OUT_PATH + 'MT_output', header='true',
                                  mode='overwrite')  # MT_output-> YEAR, NAPCS, Trade, Basis, Total Merch Trade Value
-    # endregion
-    """
-    GDP_res.coalesce(1).write.csv('../OUTPUT-Folder/GDP_output', header='true', mode='overwrite') ### GDP_output-> REF_DATE, NAICS, Total GDP Value
-    MT_res.coalesce(1).write.csv('../OUTPUT-Folder/MT_output', header='true', mode='overwrite') ### MT_output-> YEAR, NAPCS, Trade, Basis, Total Merch Trade Value
 
-    
     # region Join GDP and MT dataframes based on the 'REF_DATE' -------------> Final Goal (for visualization)
-    final_res = GDP_res.join(MT_res, GDP_res.REF_DATE == MT_res.YEAR, "inner").\
+    final_res = GDP_res.join(MT_res, GDP_res.REF_DATE == MT_res.YEAR, "inner"). \
         drop(MT_res['YEAR'])  # avoid duplication of "YEAR" column
     # select only the "Customs" Basis data
     final_df = final_res.where(final_res['Basis'] == 'Customs')
@@ -97,18 +92,16 @@ def main():
     # for each year, by month (between Jan 2000 - Aug 2020) ->
     # Find the Avg GDP & Avg Merch Trade Value for all Trades (imports and exports)
     FINAL_df = final_df.groupby('REF_DATE').agg(
-        avg('Total GDP Value').alias('Avg GDP Value'), avg('Total Merch Trade Value').alias('Avg Merch Trade Value'))\
+        avg('Total GDP Value').alias('Avg GDP Value'), avg('Total Merch Trade Value').alias('Avg Merch Trade Value')) \
         .orderBy('REF_DATE')
 
     # FINAL_df-> REF_DATE, Avg GDP Value, Avg Merch Trade Value
     """
     with open(OUTPUT_SCHEMA_PATH + "GDP+MT_output.json", 'w') as out_file:
         out_file.write(FINAL_df.schema.json())
-    FINAL_df.coalesce(1).\
-        write.csv(OUTPUT_SCHEMA_PATH+'GDP+MT_output', header='true', mode='overwrite')
-    # endregion
     """
-    FINAL_df.coalesce(1).write.csv('.../OUTPUT-Folder/GDP+MT_output', header='true', mode='overwrite') 
+    FINAL_df.coalesce(1).write.csv(OUT_PATH + 'GDP+MT_output', header='true', mode='overwrite')
+    # endregion
 
 
 if __name__ == '__main__':
