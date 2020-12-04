@@ -139,7 +139,7 @@ def main():
 	labour_ip.write.csv('../OUTPUT-Folder/Labour_productivity_output', header='true', mode='overwrite')
 
 if __name__ == '__main__':
-    spark = SparkSession.builder.appName('CPI Analysis').getOrCreate()
+    spark = SparkSession.builder.appName('GDP vs Actual Hours Worked Analysis').getOrCreate()
     assert spark.version >= '2.4' # make sure we have Spark 2.4+
     spark.sparkContext.setLogLevel('WARN')
     sc = spark.sparkContext

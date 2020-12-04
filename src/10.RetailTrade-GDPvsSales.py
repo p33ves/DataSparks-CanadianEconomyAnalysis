@@ -49,8 +49,7 @@ trade_sales_schema = types.StructType([
 def main():
 
 	########################Processing GDP Data##################################
-	#gdp_df = spark.read.csv('../data/clean/statcan/GDP.csv', schema=gdp_schema)
-	gdp_df = spark.read.csv('/home/at/project/GDP.csv', schema=gdp_schema)
+	gdp_df = spark.read.csv('../data/clean/statcan/GDP.csv', schema=gdp_schema)
 
 	#filter out null values for required columns
 	gdp_notnull_df = gdp_df.filter(gdp_df['REF_DATE'].isNotNull() | gdp_df['GEO'].isNotNull() | gdp_df['VALUE'].isNotNull())
@@ -81,7 +80,7 @@ def main():
 	
 	
 	##############Processing Retail Trade Sales Data#####################################
-	trade_sales_df = spark.read.csv('/home/at/project/retailtradesales.csv', schema=trade_sales_schema)
+	trade_sales_df = spark.read.csv('../data/clean/statcan/retailtradesales.csv', schema=trade_sales_schema)
 
 	#Filter Null rows if fields 'REF_DATE','GEO' or 'VALUE' is Null
 	trade_notnull_df = trade_sales_df.filter(trade_sales_df['REF_DATE'].isNotNull() | trade_sales_df['GEO'].isNotNull() | trade_sales_df['VALUE'].isNotNull())
@@ -115,7 +114,7 @@ def main():
 	gdp_sales.write.csv('../OUTPUT-Folder/Retail_Trade_output', header='true', mode='overwrite')
 
 if __name__ == '__main__':
-    spark = SparkSession.builder.appName('CPI Analysis').getOrCreate()
+    spark = SparkSession.builder.appName('Retail Trade Analysis').getOrCreate()
     assert spark.version >= '2.4' # make sure we have Spark 2.4+
     spark.sparkContext.setLogLevel('WARN')
     sc = spark.sparkContext
