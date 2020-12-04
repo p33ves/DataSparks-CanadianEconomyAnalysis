@@ -5,14 +5,12 @@ from pyspark.sql.functions import to_date, avg
 IN_PATH = "../data/clean/statcan/"
 PROCESSED_PATH = "../data/processed/statcan/"
 OUT_PATH = "../OUTPUT-Folder/"
-INPUT_SCHEMA_PATH = "../schema/statcan/"
-OUTPUT_SCHEMA_PATH = "../schema/processed/"
+SCHEMA_PATH = "../schema/statcan/"
 gdp_id = "36100434"
 mt_id = "12100121"
 os.makedirs(OUT_PATH, exist_ok=True)
-os.makedirs(OUTPUT_SCHEMA_PATH, exist_ok=True)
-gdp_schema = json.load(open(INPUT_SCHEMA_PATH + gdp_id + ".json"))
-mt_schema = json.load(open(INPUT_SCHEMA_PATH + mt_id + ".json"))
+gdp_schema = json.load(open(SCHEMA_PATH + gdp_id + ".json"))
+mt_schema = json.load(open(SCHEMA_PATH + mt_id + ".json"))
 
 
 def main():
@@ -74,11 +72,11 @@ def main():
     # endregion
 
     # to save final results of GDP and MT operations in 2 different folders
-    with open(OUTPUT_SCHEMA_PATH + gdp_id + ".json", 'w') as out_file:
+    with open(SCHEMA_PATH + "gdp.json", 'w') as out_file:
         out_file.write(GDP_res.schema.json())
     GDP_res.coalesce(1).write.csv(OUT_PATH + 'GDP_output', header='true',
                                   mode='overwrite')  # GDP_output-> REF_DATE, NAICS, Total GDP Value
-    with open(OUTPUT_SCHEMA_PATH + mt_id + ".json", 'w') as out_file:
+    with open(SCHEMA_PATH + "mt.json", 'w') as out_file:
         out_file.write(MT_res.schema.json())
     MT_res.coalesce(1).write.csv(OUT_PATH + 'MT_output', header='true',
                                  mode='overwrite')  # MT_output-> YEAR, NAPCS, Trade, Basis, Total Merch Trade Value
@@ -97,7 +95,7 @@ def main():
 
     # FINAL_df-> REF_DATE, Avg GDP Value, Avg Merch Trade Value
     """
-    with open(OUTPUT_SCHEMA_PATH + "GDP+MT_output.json", 'w') as out_file:
+    with open(SCHEMA_PATH + "GDP+MT_output.json", 'w') as out_file:
         out_file.write(FINAL_df.schema.json())
     """
     FINAL_df.coalesce(1).write.csv(OUT_PATH + 'GDP+MT_output', header='true', mode='overwrite')
