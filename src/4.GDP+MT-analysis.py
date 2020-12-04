@@ -3,7 +3,6 @@ from pyspark.sql import SparkSession, types
 from pyspark.sql.functions import to_date, avg
 
 IN_PATH = "../data/clean/statcan/"
-PROCESSED_PATH = "../data/processed/statcan/"
 OUT_PATH = "../OUTPUT-Folder/"
 SCHEMA_PATH = "../schema/statcan/"
 gdp_id = "36100434"

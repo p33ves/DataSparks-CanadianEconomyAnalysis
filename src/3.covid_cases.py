@@ -5,7 +5,7 @@ from pyspark.sql import SparkSession, types, dataframe
 from pyspark.sql.functions import when, first
 
 IN_PATH = "../data/raw/statcan/"
-OUT_PATH = "../data/processed/statcan/"
+OUT_PATH = "../OUTPUT-Folder/"
 SCHEMA_PATH = "../schema/statcan/"
 cc_id = "13100781"
 os.makedirs(OUT_PATH, exist_ok=True)
@@ -176,7 +176,7 @@ def main():
 
     with open(SCHEMA_PATH + "covid_cases.json", 'w') as out_file:
         out_file.write(new_df.schema.json())
-    new_df.coalesce(40).write.csv(OUT_PATH + cc_id, header=True, mode='overwrite')
+    new_df.coalesce(40).write.csv(OUT_PATH + "covid_cases", header=True, mode='overwrite')
 
 
 if __name__ == '__main__':

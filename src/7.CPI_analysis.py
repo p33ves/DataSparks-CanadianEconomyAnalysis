@@ -43,7 +43,7 @@ def main():
 
     with open(SCHEMA_PATH + "cpi.json", 'w') as out_file:
         out_file.write(result_cpi_df.schema.json())
-    result_cpi_df.write.csv('../OUTPUT-Folder/Canada_CPI_output', header='true', mode='overwrite')
+    result_cpi_df.coalesce(1).write.csv('../OUTPUT-Folder/Canada_CPI_output', header='true', mode='overwrite')
 
 
 if __name__ == '__main__':
