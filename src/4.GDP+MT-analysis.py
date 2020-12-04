@@ -3,6 +3,7 @@ from pyspark.sql import SparkSession, types
 from pyspark.sql.functions import to_date, avg
 
 IN_PATH = "../data/clean/statcan/"
+PROCESSED_PATH = "../data/processed/statcan/"
 OUT_PATH = "../OUTPUT-Folder/"
 INPUT_SCHEMA_PATH = "../schema/statcan/"
 OUTPUT_SCHEMA_PATH = "../schema/processed/"
@@ -74,11 +75,11 @@ def main():
     # to save final results of GDP and MT operations in 2 different folders
     with open(OUTPUT_SCHEMA_PATH + gdp_id + ".json", 'w') as out_file:
         out_file.write(GDP_res.schema.json())
-    GDP_res.coalesce(1).write.csv('../OUTPUT-Folder/GDP_output', header='true',
+    GDP_res.coalesce(1).write.csv(PROCESSED_PATH+gdp_id, header='true',
                                   mode='overwrite')  # GDP_output-> REF_DATE, NAICS, Total GDP Value
     with open(OUTPUT_SCHEMA_PATH + mt_id + ".json", 'w') as out_file:
         out_file.write(MT_res.schema.json())
-    MT_res.coalesce(1).write.csv('../OUTPUT-Folder/MT_output', header='true',
+    MT_res.coalesce(1).write.csv(PROCESSED_PATH+mt_id, header='true',
                                  mode='overwrite')  # MT_output-> YEAR, NAPCS, Trade, Basis, Total Merch Trade Value
     # endregion
 
@@ -93,13 +94,13 @@ def main():
     FINAL_df = final_df.groupby('REF_DATE').agg(
         avg('Total GDP Value').alias('Avg GDP Value'), avg('Total Merch Trade Value').alias('Avg Merch Trade Value'))\
         .orderBy('REF_DATE')
-    # endregion
 
     # FINAL_df-> REF_DATE, Avg GDP Value, Avg Merch Trade Value
     with open(OUTPUT_SCHEMA_PATH + "GDP+MT_output.json", 'w') as out_file:
         out_file.write(FINAL_df.schema.json())
     FINAL_df.coalesce(1).\
-        write.csv('../OUTPUT-Folder/GDP+MT_output', header='true', mode='overwrite')
+        write.csv(OUTPUT_SCHEMA_PATH+'GDP+MT_output', header='true', mode='overwrite')
+    # endregion
 
 
 if __name__ == '__main__':
