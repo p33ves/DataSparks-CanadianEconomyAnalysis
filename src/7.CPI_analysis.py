@@ -5,27 +5,21 @@ from pyspark.sql import SparkSession, functions, types
 from pyspark.sql.functions import to_date,lit,year,avg,round
 import datetime
 
-cpi_schema = types.StructType([
-    types.StructField('REF_DATE', types.StringType()),
-    types.StructField('GEO', types.StringType()),
-    types.StructField('DGUID', types.StringType()),
-    types.StructField('Products and product groups', types.StringType()),
-    types.StructField('UOM', types.StringType()),
-    types.StructField('UOM_ID', types.IntegerType()),
-    types.StructField('SCALAR_FACTOR', types.StringType()),
-	types.StructField('SCALAR_ID', types.IntegerType()),
-    types.StructField('VECTOR', types.StringType()),
-    types.StructField('COORDINATE', types.DoubleType()),
-    types.StructField('VALUE', types.DoubleType()),
-	types.StructField('STATUS', types.StringType()),
-    types.StructField('SYMBOL', types.StringType()),
-    types.StructField('TERMINATED', types.StringType()),
-	types.StructField('DECIMALS', types.IntegerType()),
-])
+
+IN_PATH = "../data/clean/statcan/"
+PROCESSED_PATH = "../data/processed/statcan/"
+OUT_PATH = "../OUTPUT-Folder/"
+INPUT_SCHEMA_PATH = "../schema/statcan/"
+OUTPUT_SCHEMA_PATH = "../schema/processed/"
+cpi_id = "18100004"
+os.makedirs(OUT_PATH, exist_ok=True)
+os.makedirs(OUTPUT_SCHEMA_PATH, exist_ok=True)
+cpi_schema = json.load(open(INPUT_SCHEMA_PATH + cpi_id + ".json"))
 
 	
 def main():
-	cpi_df = spark.read.csv('../data/clean/statcan/Canada_CPI.csv', schema=cpi_schema)
+	cpi_df = spark.read.csv(IN_PATH + cpi_id + '/*.csv',
+                         schema=types.StructType.fromJson(cpi_schema))
 
 	#filter out null values for required columns
 	notnull_df = cpi_df.filter(cpi_df['REF_DATE'].isNotNull() | cpi_df['GEO'].isNotNull() | cpi_df['VALUE'].isNotNull())
