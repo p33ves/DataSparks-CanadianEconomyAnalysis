@@ -1,26 +1,25 @@
 import os
 import sys
-import json
-import shutil
-from pyspark.sql import SparkSession, functions, types
+
+from pyspark.sql import SparkSession
 
 assert sys.version_info >= (3, 5)  # make sure we have Python 3.5+
-spark = SparkSession.builder.appName('statcan data cleanse').getOrCreate()
+spark = SparkSession.builder.appName('statcan data cleanse + schema creation').getOrCreate()
 spark.sparkContext.setLogLevel('WARN')
 sc = spark.sparkContext
 
 IN_PATH = "../data/raw/statcan/"
 OUT_PATH = "../data/clean/statcan/"
 SCHEMA_PATH = "../schema/statcan/"
+os.makedirs(SCHEMA_PATH, exist_ok=True)
 os.makedirs(OUT_PATH, exist_ok=True)
 
 
 def clean_csv(file_name):
     table_id = os.path.basename(file_name).split('.')[0]
-    input_schema = json.load(open(SCHEMA_PATH + table_id + ".json", 'r'))
     try:
         input_data = spark.read.option("header", "true") \
-            .csv(file_name, schema=types.StructType.fromJson(input_schema))
+            .csv(file_name, inferSchema=True)
         data_in_range = input_data.where(
             input_data['REF_DATE'].startswith('201') |
             input_data['REF_DATE'].startswith('202'))
@@ -37,10 +36,8 @@ def clean_csv(file_name):
             .option("header", "true") \
             .csv(OUT_PATH + table_id)
         # os.remove(file_name)
-        # source = [out_file for out_file in os.listdir(OUT_PATH + table_id) if out_file.endswith(".csv")][0]
-        # destination = OUT_PATH + table_id + ".csv"
-        # shutil.copy(source, destination)
-        # os.rmdir(OUT_PATH + table_id)
+        with open(SCHEMA_PATH + table_id + ".json", 'w') as out_file:
+            out_file.write(input_data.schema.json())
         return {table_id: "Successful"}
     except Exception as err:
         return {table_id: err}

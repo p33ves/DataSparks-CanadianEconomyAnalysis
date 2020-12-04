@@ -43,6 +43,7 @@ def download_zips(line):
             input_zip.extract(input_file, OUT_PATH)
             print(f"Extracted {input_file} for - {title} ")
         input_zip.close()
+        os.remove(download_file)
         return {table_id: "Successful"}
     except Exception as err:
         return {table_id: err}
