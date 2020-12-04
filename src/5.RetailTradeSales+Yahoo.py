@@ -4,24 +4,16 @@ from pyspark.sql.functions import col, lit
 from pyspark.sql import SparkSession, functions, types
 from pyspark.sql.functions import to_date, round, avg, year
 
-retail_schema = types.StructType([
-    types.StructField('REF_DATE', types.StringType()),
-    types.StructField('GEO', types.StringType()),
-    types.StructField('DGUID', types.StringType()),
-    types.StructField('North American Industry Classification System (NAICS)', types.StringType()),
-    types.StructField('Adjustments', types.StringType()),
-    types.StructField('UOM', types.StringType()),
-    types.StructField('UOM_ID', types.IntegerType()),
-    types.StructField('SCALAR_FACTOR',types.StringType()),
-    types.StructField('SCALAR_ID', types.IntegerType()),
-    types.StructField('VECTOR', types.StringType()),
-    types.StructField('COORDINATE', types.DoubleType()),
-    types.StructField('VALUE', types.DoubleType()),
-    types.StructField('STATUS', types.StringType()),
-    types.StructField('SYMBOL', types.StringType()),
-    types.StructField('TERMINATED', types.StringType()),
-    types.StructField('DECIMALS', types.IntegerType()),
-])
+IN_PATH = "../data/clean/statcan/"
+PROCESSED_PATH = "../data/processed/statcan/"
+OUT_PATH = "../OUTPUT-Folder/"
+INPUT_SCHEMA_PATH = "../schema/statcan/"
+OUTPUT_SCHEMA_PATH = "../schema/processed/"
+retail_id = "20100008"
+os.makedirs(OUT_PATH, exist_ok=True)
+os.makedirs(OUTPUT_SCHEMA_PATH, exist_ok=True)
+retail_schema = json.load(open(INPUT_SCHEMA_PATH + retail_id + ".json"))
+
 
 yahoo_schema = types.StructType([
     types.StructField('REF_DATE', types.StringType()),
@@ -36,7 +28,8 @@ yahoo_schema = types.StructType([
 
 def main():
 
-    retail = spark.read.csv('../data/clean/statcan/20100008/Retail-trade-sales.csv',schema=retail_schema) #reading 'RetailTradeSales' csv Data 
+    retail = spark.read.csv(IN_PATH + retail_id + '/*.csv',
+                         schema=types.StructType.fromJson(retail_schema) #reading 'RetailTradeSales' csv Data 
     yahoo = spark.read.csv('../data/YahooFinance.csv',schema=yahoo_schema) #reading seasonal stock prices from 'YahooFinance' csv Data
     
 

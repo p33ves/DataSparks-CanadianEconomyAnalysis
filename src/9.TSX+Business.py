@@ -4,48 +4,25 @@ from pyspark.sql.functions import col, lit
 from pyspark.sql import SparkSession, functions, types, dataframe
 from pyspark.sql.functions import to_date, round, avg, year
 
-TSX_schema = types.StructType([
-    types.StructField('REF_DATE', types.StringType()),
-    types.StructField('GEO', types.StringType()),
-    types.StructField('DGUID', types.StringType()),
-    types.StructField('Toronto Stock Exchange Statistics', types.StringType()),
-    types.StructField('UOM', types.StringType()),
-    types.StructField('UOM_ID', types.IntegerType()),
-    types.StructField('SCALAR_FACTOR',types.StringType()),
-    types.StructField('SCALAR_ID', types.IntegerType()),
-    types.StructField('VECTOR', types.StringType()),
-    types.StructField('COORDINATE', types.DoubleType()),
-    types.StructField('VALUE', types.DoubleType()),
-    types.StructField('STATUS', types.StringType()),
-    types.StructField('SYMBOL', types.StringType()),
-    types.StructField('TERMINATED', types.StringType()),
-    types.StructField('DECIMALS', types.IntegerType()),
-])
 
-Business_schema = types.StructType([
-    types.StructField('REF_DATE', types.StringType()),
-    types.StructField('GEO', types.StringType()),
-    types.StructField('DGUID', types.StringType()),
-    types.StructField('Leading indicators', types.StringType()),
-    types.StructField('Composite index', types.StringType()),
-    types.StructField('UOM', types.StringType()),
-    types.StructField('UOM_ID', types.IntegerType()),
-    types.StructField('SCALAR_FACTOR',types.StringType()),
-    types.StructField('SCALAR_ID', types.IntegerType()),
-    types.StructField('VECTOR', types.StringType()),
-    types.StructField('COORDINATE', types.DoubleType()),
-    types.StructField('VALUE', types.DoubleType()),
-    types.StructField('STATUS', types.StringType()),
-    types.StructField('SYMBOL', types.StringType()),
-    types.StructField('TERMINATED', types.StringType()),
-    types.StructField('DECIMALS', types.IntegerType()),
-])
-
+IN_PATH = "../data/clean/statcan/"
+PROCESSED_PATH = "../data/processed/statcan/"
+OUT_PATH = "../OUTPUT-Folder/"
+INPUT_SCHEMA_PATH = "../schema/statcan/"
+OUTPUT_SCHEMA_PATH = "../schema/processed/"
+tsx_id = "10100125"
+bus_id = "33100111"
+os.makedirs(OUT_PATH, exist_ok=True)
+os.makedirs(OUTPUT_SCHEMA_PATH, exist_ok=True)
+TSX_schema = json.load(open(INPUT_SCHEMA_PATH + tsx_id + ".json"))
+Business_schema = json.load(open(INPUT_SCHEMA_PATH + bus_id + ".json"))
 
 def main():
 
-    tsx = spark.read.csv('../data/clean/statcan/10100125/TSX-statistics.csv',schema=TSX_schema) #reading 'TSX' csv Data 
-    buss = spark.read.csv('../data/clean/statcan/33100111/Business-indicators.csv',schema=Business_schema) #reading 'BusinessIndicators' csv Data
+    tsx = spark.read.csv(IN_PATH + tsx_id + '/*.csv',
+                         schema=types.StructType.fromJson(TSX_schema)) #reading 'TSX' csv Data 
+    buss = spark.read.csv(IN_PATH + bus_id + '/*.csv',
+                         schema=types.StructType.fromJson(Business_schema)) #reading 'BusinessIndicators' csv Data
 
 
     ############################################### TSX Operations #################################################
