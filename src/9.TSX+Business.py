@@ -19,9 +19,9 @@ Business_schema = json.load(open(INPUT_SCHEMA_PATH + bus_id + ".json"))
 
 def main():
 
-    tsx = spark.read.csv(IN_PATH + gdp_id + '/*.csv',
+    tsx = spark.read.csv(IN_PATH + tsx_id + '/*.csv',
                          schema=types.StructType.fromJson(TSX_schema)) #reading 'TSX' csv Data 
-    buss = spark.read.csv(IN_PATH + gdp_id + '/*.csv',
+    buss = spark.read.csv(IN_PATH + bus_id + '/*.csv',
                          schema=types.StructType.fromJson(Business_schema)) #reading 'BusinessIndicators' csv Data
 
 
