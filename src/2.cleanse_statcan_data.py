@@ -35,7 +35,7 @@ def clean_csv(file_name):
         output_data.write \
             .option("header", "true") \
             .csv(OUT_PATH + table_id)
-        # os.remove(file_name)
+        os.remove(file_name)
         with open(SCHEMA_PATH + table_id + ".json", 'w') as out_file:
             out_file.write(input_data.schema.json())
         return {table_id: "Successful"}
