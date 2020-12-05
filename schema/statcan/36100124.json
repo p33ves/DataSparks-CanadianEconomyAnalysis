@@ -46,7 +46,7 @@
       "metadata": {},
       "name": "UOM_ID",
       "nullable": true,
-      "type": "string"
+      "type": "integer"
     },
     {
       "metadata": {},
@@ -58,7 +58,7 @@
       "metadata": {},
       "name": "SCALAR_ID",
       "nullable": true,
-      "type": "string"
+      "type": "integer"
     },
     {
       "metadata": {},
@@ -76,7 +76,7 @@
       "metadata": {},
       "name": "VALUE",
       "nullable": true,
-      "type": "string"
+      "type": "integer"
     },
     {
       "metadata": {},
@@ -100,7 +100,7 @@
       "metadata": {},
       "name": "DECIMALS",
       "nullable": true,
-      "type": "string"
+      "type": "integer"
     }
   ],
   "type": "struct"
