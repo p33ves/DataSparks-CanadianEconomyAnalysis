@@ -2,37 +2,27 @@ import sys
 assert sys.version_info >= (3, 5) # make sure we have Python 3.5+
 
 from pyspark.sql import SparkSession, functions, types
-from pyspark.sql.functions import to_date,lit,year,avg,round
+from pyspark.sql.functions import to_date,lit,year,avg
 import datetime
 
-#Anaysing the overall househols expenditure values
+#Analyzing the overall household expenditure values
 
-consumption_schema = types.StructType([
-	types.StructField('REF_DATE', types.StringType()),
-	types.StructField('GEO', types.StringType()),
-	types.StructField('DGUID', types.StringType()),
-	types.StructField('Prices',types.StringType()),
-	types.StructField('Seasonal adjustment', types.StringType()),
-	types.StructField('Estimates', types.StringType()),
-	types.StructField('UOM', types.StringType()),
-	types.StructField('UOM_ID', types.StringType()),
-	types.StructField('SCALAR_FACTOR',types.StringType()),
-	types.StructField('SCALAR_ID', types.StringType()),
-	types.StructField('VECTOR', types.StringType()),
-	types.StructField('COORDINATE', types.StringType()),
-	types.StructField('VALUE', types.StringType()),
-	types.StructField('STATUS', types.StringType()),
-	types.StructField('SYMBOL', types.StringType()),
-	types.StructField('TERMINATED', types.StringType()),
-	types.StructField('DECIMALS', types.StringType()),
-])
+
+IN_PATH = "../data/clean/statcan/"
+OUT_PATH = "../OUTPUT-Folder/"
+SCHEMA_PATH = "../schema/statcan/"
+exp_id = "3610012401"
+os.makedirs(OUT_PATH, exist_ok=True)
+exp_schema = json.load(open(SCHEMA_PATH + exp_id + ".json"))
+trade_sales_schema = json.load(open(SCHEMA_PATH + trade_id + ".json"))
 
 
 def main():
 
 	########################Processing Detailed household final consumption expenditure, Canada, quarterly Data##################################
-	exp_df = spark.read.csv('../data/clean/statcan/household_consumption.csv', schema=consumption_schema)
-
+    exp_df = spark.read.csv(IN_PATH + exp_id + '/*.csv',
+                            schema=types.StructType.fromJson(exp_schema))
+							
 	#filter out null values for required columns
 	exp_notnull_df = exp_df.filter(exp_df['REF_DATE'].isNotNull() | exp_df['GEO'].isNotNull() | exp_df['Estimates'].isNotNull() |exp_df['VALUE'].isNotNull())
 
@@ -45,7 +35,7 @@ def main():
 	#Fetch only 'Household final consumption expenditure' Estimates of expenditure
 	exp = exp_seasonal_df.filter(exp_seasonal_df['Estimates'] == lit('Household final consumption expenditure'))
 
-	#Take Get onyl current prices
+	#Take Get only current prices
 	exp_prices = exp.filter(exp['Prices'] == lit('Current prices'))
 
 	#fetch only required columns
@@ -60,7 +50,7 @@ def main():
 	#Get yearly average data for Household final consumption expenditure
 	exp_avg = exp_int_df.groupBy(year('REF_DATE').alias('YEAR')).agg(avg(exp_int_df['household_expenditure']).alias('household_expenditure*(10^6)')).orderBy('YEAR')
 
-	exp_avg.write.csv('../OUTPUT-Folder/house_expenditure_output', header='true', mode='overwrite')
+	exp_avg.write.csv(OUT_PATH + 'household_consumption_output', header='true', mode='overwrite')
 
 if __name__ == '__main__':
     spark = SparkSession.builder.appName('Canada Household expenditure').getOrCreate()
