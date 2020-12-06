@@ -17,6 +17,7 @@ input_schema = json.loads(s3_cc_data)
 
 os.makedirs(OUT_PATH, exist_ok=True)
 
+
 def boolean_interpreter(new_df, column_name: str) -> dataframe.DataFrame:
     new_df = new_df.withColumn(column_name + '_interpreted',
                                when(new_df[column_name] == 1, True)

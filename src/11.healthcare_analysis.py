@@ -13,7 +13,7 @@ cc_id = "13100781"
 retail_id = "20100008"
 
 s3_obj = boto3.client('s3')
-s3_gdp_obj = s3_obj.get_object(Bucket='mysparks', Key=SCHEMA_PATH + gdp_id + ".json")
+s3_gdp_obj = s3_obj.get_object(Bucket='mysparks', Key=SCHEMA_PATH + "gdp.json")
 s3_gdp_data = s3_gdp_obj['Body'].read().decode('utf-8')
 gdp_schema = json.loads(s3_gdp_data)
 
@@ -21,15 +21,16 @@ s3_cpi_obj = s3_obj.get_object(Bucket='mysparks', Key=SCHEMA_PATH + cpi_id + ".j
 s3_cpi_data = s3_cpi_obj['Body'].read().decode('utf-8')
 cpi_schema = json.loads(s3_cpi_data)
 
-s3_cc_obj = s3_obj.get_object(Bucket='mysparks', Key=SCHEMA_PATH + cc_id + ".json")
+s3_cc_obj = s3_obj.get_object(Bucket='mysparks', Key=SCHEMA_PATH + "covid_cases.json")
 s3_cc_data = s3_cc_obj['Body'].read().decode('utf-8')
 cc_schema = json.loads(s3_cc_data)
 
-s3_retail_obj = s3_obj.get_object(Bucket='mysparks', Key=SCHEMA_PATH + retail_id + ".json")
+s3_retail_obj = s3_obj.get_object(Bucket='mysparks', Key=SCHEMA_PATH + "retailsales_canada.json")
 s3_retail_data = s3_retail_obj['Body'].read().decode('utf-8')
 retail_schema = json.loads(s3_retail_data)
 
 os.makedirs(OUT_PATH, exist_ok=True)
+
 
 def main():
     gdp = spark.read.csv(OUT_PATH + 'GDP_output/*.csv',
@@ -63,6 +64,17 @@ def main():
     healthcare_retail = retail.filter((functions.year(retail['REF_DATE']) == 2020)) \
         .select(retail['REF_DATE'], retail["Health and personal care stores [446]"]
                 .alias("Retail Trade sales for - Health and personal care stores x10^3 (in CAD)"))
+    # endregion
+
+    # region covid_cases
+    new_cases = covid_cases.groupby(covid_cases['Episode month']).count()
+    recovered_cases = covid_cases.groupby(covid_cases['Recovery month']).count()
+    deaths = covid_cases.filter(covid_cases['Death']).groupby(covid_cases['Episode month']).count()
+    hospital_statuses_cases = covid_cases.groupby(covid_cases['Episode month']) \
+        .pivot('Hospital status', ["Hospitalized and in ICU", "Hospitalized, but not in ICU",
+                                   "Not hospitalized", "Not Stated/Unknown"]).count()
+    covid_trend = new_cases.select(new_cases['Episode month'].alias("Month"),
+                                   new_cases['count'].alias("New cases"))
     # endregion
 
     # FINAL_df-> REF_DATE, Avg GDP Value, Avg Merch Trade Value
