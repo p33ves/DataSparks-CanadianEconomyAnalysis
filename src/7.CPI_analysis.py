@@ -1,21 +1,24 @@
 import os
 import json
 import sys
-
+import datetime
+import boto3
 assert sys.version_info >= (3, 5)  # make sure we have Python 3.5+
 
 from pyspark.sql import SparkSession, types
 from pyspark.sql.functions import to_date, lit, year, avg, round
-import datetime
 
-IN_PATH = "../data/clean/statcan/"
-PROCESSED_PATH = "../data/processed/statcan/"
-OUT_PATH = "../OUTPUT-Folder/"
-SCHEMA_PATH = "../schema/statcan/"
+IN_PATH = "s3://mysparks/data/clean/statcan/"
+OUT_PATH = "s3://mysparks/OUTPUT-Folder/"
 cpi_id = "18100004"
-os.makedirs(OUT_PATH, exist_ok=True)
-cpi_schema = json.load(open(SCHEMA_PATH + cpi_id + ".json"))
+SCHEMA_PATH = "schema/statcan/" + cpi_id + ".json"
 
+s3_obj = boto3.client('s3')
+s3_cpi_obj = s3_obj.get_object(Bucket='mysparks', Key=SCHEMA_PATH)
+s3_cpi_data = s3_cpi_obj['Body'].read().decode('utf-8')
+cpi_schema = json.loads(s3_cpi_data)
+
+os.makedirs(OUT_PATH, exist_ok=True)
 
 def main():
     cpi_df = spark.read.csv(IN_PATH + cpi_id + '/*.csv',

@@ -1,16 +1,25 @@
 import os, datetime, json
+import boto3
+
 from pyspark.sql import SparkSession, types
 from pyspark.sql.functions import to_date, avg
 
-IN_PATH = "../data/clean/statcan/"
-OUT_PATH = "../OUTPUT-Folder/"
-SCHEMA_PATH = "../schema/statcan/"
+IN_PATH = "s3://mysparks/data/clean/statcan/"
+OUT_PATH = "s3://mysparks/OUTPUT-Folder/"
+SCHEMA_PATH = "schema/statcan/"
 gdp_id = "36100434"
 mt_id = "12100121"
-os.makedirs(OUT_PATH, exist_ok=True)
-gdp_schema = json.load(open(SCHEMA_PATH + gdp_id + ".json"))
-mt_schema = json.load(open(SCHEMA_PATH + mt_id + ".json"))
 
+s3_obj = boto3.client('s3')
+s3_gdp_obj = s3_obj.get_object(Bucket='mysparks', Key=SCHEMA_PATH + gdp_id + ".json")
+s3_gdp_data = s3_gdp_obj['Body'].read().decode('utf-8')
+gdp_schema = json.loads(s3_gdp_data)
+
+s3_mt_obj = s3_obj.get_object(Bucket='mysparks', Key=SCHEMA_PATH + mt_id + ".json")
+s3_mt_data = s3_mt_obj['Body'].read().decode('utf-8')
+mt_schema = json.loads(s3_mt_data)
+
+os.makedirs(OUT_PATH, exist_ok=True)
 
 def main():
     gdp = spark.read.csv(IN_PATH + gdp_id + '/*.csv',

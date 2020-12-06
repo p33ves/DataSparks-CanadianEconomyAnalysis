@@ -1,17 +1,23 @@
 import datetime
 import json
 import os
+import boto3
 
 from pyspark.sql.functions import col
 from pyspark.sql import SparkSession, types
 from pyspark.sql.functions import to_date, avg
 
-IN_PATH = "../data/clean/statcan/"
-OUT_PATH = "../OUTPUT-Folder/"
-SCHEMA_PATH = "../schema/statcan/"
+IN_PATH = "s3://mysparks/data/clean/statcan/"
+OUT_PATH = "s3://mysparks/OUTPUT-Folder/"
+SCHEMA_PATH = "schema/statcan/"
 retail_id = "20100008"
+
+s3_obj = boto3.client('s3')
+s3_retail_obj = s3_obj.get_object(Bucket='mysparks', Key=SCHEMA_PATH + retail_id + ".json")
+s3_retail_data = s3_retail_obj['Body'].read().decode('utf-8')
+retail_schema = json.loads(s3_retail_data)
+
 os.makedirs(OUT_PATH, exist_ok=True)
-retail_schema = json.load(open(SCHEMA_PATH + retail_id + ".json"))
 
 yahoo_schema = types.StructType([
     types.StructField('REF_DATE', types.StringType()),

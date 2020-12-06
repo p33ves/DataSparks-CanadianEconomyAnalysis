@@ -2,7 +2,7 @@ import os
 import json
 import sys
 import datetime
-
+import boto3
 assert sys.version_info >= (3, 5)  # make sure we have Python 3.5+
 
 from pyspark.sql import SparkSession, functions, types
@@ -11,13 +11,17 @@ from pyspark.sql.functions import to_date, lit, year, avg
 
 # Analyzing the overall household expenditure values
 
+IN_PATH = "s3://mysparks/data/clean/statcan/"
+OUT_PATH = "s3://mysparks/OUTPUT-Folder/"
+exp_id = "36100124"
+SCHEMA_PATH = "schema/statcan/" + exp_id + ".json"
 
-IN_PATH = "../data/clean/statcan/"
-OUT_PATH = "../OUTPUT-Folder/"
-SCHEMA_PATH = "../schema/statcan/"
-exp_id = "3610012401"
+s3_obj = boto3.client('s3')
+s3_exp_obj = s3_obj.get_object(Bucket='mysparks', Key=SCHEMA_PATH)
+s3_exp_data = s3_exp_obj['Body'].read().decode('utf-8')
+exp_schema = json.loads(s3_exp_data)
+
 os.makedirs(OUT_PATH, exist_ok=True)
-exp_schema = json.load(open(SCHEMA_PATH + exp_id + ".json"))
 
 
 def main():

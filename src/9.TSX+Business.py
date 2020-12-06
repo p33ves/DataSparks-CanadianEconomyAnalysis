@@ -1,18 +1,26 @@
 import json
 import os
+import boto3
 
 from pyspark.sql import SparkSession, types
 from pyspark.sql.functions import to_date, avg, year
 
-IN_PATH = "../data/clean/statcan/"
-OUT_PATH = "../OUTPUT-Folder/"
-SCHEMA_PATH = "../schema/statcan/"
+IN_PATH = "s3://mysparks/data/clean/statcan/"
+OUT_PATH = "s3://mysparks/OUTPUT-Folder/"
+SCHEMA_PATH = "schema/statcan/"
 tsx_id = "10100125"
 bus_id = "33100111"
-os.makedirs(OUT_PATH, exist_ok=True)
-TSX_schema = json.load(open(SCHEMA_PATH + tsx_id + ".json"))
-Business_schema = json.load(open(SCHEMA_PATH + bus_id + ".json"))
 
+s3_obj = boto3.client('s3')
+s3_tsx_obj = s3_obj.get_object(Bucket='mysparks', Key=SCHEMA_PATH + tsx_id + ".json")
+s3_tsx_data = s3_tsx_obj['Body'].read().decode('utf-8')
+TSX_schema = json.loads(s3_tsx_data)
+
+s3_bus_obj = s3_obj.get_object(Bucket='mysparks', Key=SCHEMA_PATH + bus_id + ".json")
+s3_bus_data = s3_bus_obj['Body'].read().decode('utf-8')
+Business_schema = json.loads(s3_bus_data)
+
+os.makedirs(OUT_PATH, exist_ok=True)
 
 def main():
     tsx = spark.read.csv(IN_PATH + tsx_id + '/*.csv',

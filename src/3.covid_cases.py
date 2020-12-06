@@ -1,16 +1,21 @@
 import json
 import os
+import boto3
 
 from pyspark.sql import SparkSession, types, dataframe
 from pyspark.sql.functions import when, first
 
-IN_PATH = "../data/raw/statcan/"
-OUT_PATH = "../OUTPUT-Folder/"
-SCHEMA_PATH = "../schema/statcan/"
+IN_PATH = "s3://mysparks/data/raw/statcan/"
+OUT_PATH = "s3://mysparks/OUTPUT-Folder/"
+SCHEMA_PATH = "schema/statcan/"
 cc_id = "13100781"
-os.makedirs(OUT_PATH, exist_ok=True)
-input_schema = json.load(open(SCHEMA_PATH + cc_id + ".json"))
 
+s3_obj = boto3.client('s3')
+s3_cc_obj = s3_obj.get_object(Bucket='mysparks', Key=SCHEMA_PATH + cc_id + ".json")
+s3_cc_data = s3_cc_obj['Body'].read().decode('utf-8')
+input_schema = json.loads(s3_cc_data)
+
+os.makedirs(OUT_PATH, exist_ok=True)
 
 def boolean_interpreter(new_df, column_name: str) -> dataframe.DataFrame:
     new_df = new_df.withColumn(column_name + '_interpreted',

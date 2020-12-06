@@ -2,7 +2,7 @@ import sys
 import os
 import datetime
 import json
-
+import boto3
 assert sys.version_info >= (3, 5)  # make sure we have Python 3.5+
 
 from pyspark.sql import SparkSession, functions, types
@@ -10,15 +10,23 @@ from pyspark.sql.functions import to_date, lit, year, avg, split
 
 # Both the Tables have data for Canada for industries and not province-wise
 
-IN_PATH = "../data/clean/statcan/"
-OUT_PATH = "../OUTPUT-Folder/"
-SCHEMA_PATH = "../schema/statcan/"
+IN_PATH = "s3://mysparks/data/clean/statcan/"
+OUT_PATH = "s3://mysparks/OUTPUT-Folder/"
 gdp_id = "36100434"
 hrs_id = "14100289"
-os.makedirs(OUT_PATH, exist_ok=True)
-gdp_schema = json.load(open(SCHEMA_PATH + gdp_id + ".json"))
-hours_schema = json.load(open(SCHEMA_PATH + hrs_id + ".json"))
+GDP_SCHEMA_PATH = "schema/statcan/" + gdp_id + ".json"
+HOURS_SCHEMA_PATH = "schema/statcan/" + hrs_id + ".json"
 
+s3_obj = boto3.client('s3')
+s3_gdp_obj = s3_obj.get_object(Bucket='mysparks', Key=GDP_SCHEMA_PATH)
+s3_gdp_data = s3_gdp_obj['Body'].read().decode('utf-8')
+gdp_schema = json.loads(s3_gdp_data)
+
+s3_hours_obj = s3_obj.get_object(Bucket='mysparks', Key=HOURS_SCHEMA_PATH)
+s3_hours_data = s3_hours_obj['Body'].read().decode('utf-8')
+hours_schema = json.loads(s3_hours_data)
+
+os.makedirs(OUT_PATH, exist_ok=True)
 
 def main():
     ########################Processing GDP Data##################################

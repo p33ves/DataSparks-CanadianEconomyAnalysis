@@ -1,20 +1,35 @@
 import os, datetime, json
+import boto3
+
 from pyspark.sql import SparkSession, types, functions
 from pyspark.sql.functions import to_date, avg
 
-IN_PATH = "../data/clean/statcan/"
-OUT_PATH = "../OUTPUT-Folder/"
-SCHEMA_PATH = "../schema/processed/"
+IN_PATH = "s3://mysparks/data/clean/statcan/"
+OUT_PATH = "s3://mysparks/OUTPUT-Folder/"
+SCHEMA_PATH = "schema/statcan/"
 gdp_id = "36100434"
 cpi_id = "18100004"
 cc_id = "13100781"
 retail_id = "20100008"
-os.makedirs(OUT_PATH, exist_ok=True)
-gdp_schema = json.load(open(SCHEMA_PATH + "gdp.json"))
-cpi_schema = json.load(open(SCHEMA_PATH + cpi_id + ".json"))
-cc_schema = json.load(open(SCHEMA_PATH + "covid_cases.json"))
-retail_schema = json.load(open(SCHEMA_PATH + "retailsales_canada.json"))
 
+s3_obj = boto3.client('s3')
+s3_gdp_obj = s3_obj.get_object(Bucket='mysparks', Key=SCHEMA_PATH + gdp_id + ".json")
+s3_gdp_data = s3_gdp_obj['Body'].read().decode('utf-8')
+gdp_schema = json.loads(s3_gdp_data)
+
+s3_cpi_obj = s3_obj.get_object(Bucket='mysparks', Key=SCHEMA_PATH + cpi_id + ".json")
+s3_cpi_data = s3_cpi_obj['Body'].read().decode('utf-8')
+cpi_schema = json.loads(s3_cpi_data)
+
+s3_cc_obj = s3_obj.get_object(Bucket='mysparks', Key=SCHEMA_PATH + cc_id + ".json")
+s3_cc_data = s3_cc_obj['Body'].read().decode('utf-8')
+cc_schema = json.loads(s3_cc_data)
+
+s3_retail_obj = s3_obj.get_object(Bucket='mysparks', Key=SCHEMA_PATH + retail_id + ".json")
+s3_retail_data = s3_retail_obj['Body'].read().decode('utf-8')
+retail_schema = json.loads(s3_retail_data)
+
+os.makedirs(OUT_PATH, exist_ok=True)
 
 def main():
     gdp = spark.read.csv(OUT_PATH + 'GDP_output/*.csv',
