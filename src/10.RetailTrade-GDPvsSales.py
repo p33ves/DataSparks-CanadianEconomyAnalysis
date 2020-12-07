@@ -10,9 +10,9 @@ from pyspark.sql.functions import to_date, lit, year, avg, round
 
 # Comparing the Retail Trade Sales vs its GDP over the last 10 years
 
-IN_PATH = "../data/clean/statcan/"
-OUT_PATH = "../OUTPUT-Folder/"
-SCHEMA_PATH = "../schema/statcan/"
+IN_PATH = "s3://mysparks/data/clean/statcan/"
+OUT_PATH = "s3://mysparks/OUTPUT-Folder/"
+SCHEMA_PATH = "s3://mysparks/schema/statcan/"
 gdp_id = "36100434"
 trade_id = "20100008"
 os.makedirs(OUT_PATH, exist_ok=True)
