@@ -46,7 +46,11 @@ https://open.canada.ca/data/en/dataset/a0ac9f2f-b993-4653-9798-8871d7b1db3e
 -> Yahoo finance TSX Data for stocks (2000 - 2020)
 https://finance.yahoo.com/quote/%5EGSPTSE/history?period1=948672000&period2=1603497600&interval=1d&filter=history&frequency=1d&includeAdjustedClose=true
 
-Technologies : Spark (RDD/Dataframes) with Amazon Web Services for ETL and processing, Python (pandas/matplotlib/seaborn/flask) for data visualization and dashboard creation
+Technologies : Spark (RDD/Dataframes) with Amazon Web Services :
+
+-> AWS-EMR for ETL and processing
+-> AWS-S3 for storage
+-> AWS-Quicksight for data visualization and dashboard creation
 
 STEPS FOR BIG DATA PROJECT EXECUTION:
 =====================================
