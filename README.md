@@ -28,6 +28,8 @@ f) Actual hours worked at main job, by industry, monthly :
 https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028901  
 g) Average weekly earnings by industry, annually :  
 https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410020401  
+h) Detailed household final consumption expenditure, Canada, quarterly :   
+https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3610012401  
 
 2. International Monetary  Fund (IMF) Website  
 a) Canadian GDP and inflation rate data :  
@@ -48,7 +50,7 @@ https://finance.yahoo.com/quote/%5EGSPTSE/history?period1=948672000&period2=1603
 Technologies : Spark (RDD/Dataframes) with Amazon Web Services :  
 -> AWS-EMR for ETL and processing  
 -> AWS-S3 for storage  
--> AWS-Quicksight for data visualization and dashboard creation  
+-> AWS-QuickSight for data visualization and dashboard creation  
 
 STEPS FOR BIG DATA PROJECT EXECUTION:
 =====================================
@@ -68,3 +70,15 @@ Below code files are stored in the "src" folder in GitHub and in "ProjectCode" i
 10. spark-submit 10.RetailTrade-GDPvsSales.py  
 11. spark-submit 11.healthcare_analysis.py  
 12. spark-submit 12.householdconsumption.py  
+
+
+STEPS FOR AWS CLUSTER SETUP :  
+==============================  
+
+1. AWS Educate Account : [Pipeline : EMR Spark Cluster --> S3 storage --> QuickSight Visualization]  
+a) To setup AWS EMR-Spark Cluster session : Key Pair Created - "datasparks"  
+   Files for key pairs :    
+   -> "DataSparks.pem" --- for linux/mac  
+   -> "dataKey.ppk" --- converted by PuttyGen for Windows  
+b) An S3 storage bucket called "mysparks" has been created which contains the input data folder, Project code folder and the output folder  
+c) The files from the output folder in S3 bucket "mysparks" is used for data visualization in AWS QuickSight Tool
