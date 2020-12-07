@@ -1,14 +1,16 @@
-import os, datetime, json
+import os
+import datetime
+import json
 import boto3
 
 from pyspark.sql import SparkSession, types
 from pyspark.sql.functions import to_date, avg
 
+# IN_PATH = "../data/clean/statcan/"
+# OUT_PATH = "../OUTPUT-Folder/"
+# SCHEMA_PATH = "../schema/statcan/"
 IN_PATH = "s3://mysparks/data/clean/statcan/"
 OUT_PATH = "s3://mysparks/OUTPUT-Folder/"
-#IN_PATH = "../data/clean/statcan/"
-#OUT_PATH = "../OUTPUT-Folder/"
-
 SCHEMA_PATH = "schema/statcan/"
 gdp_id = "36100434"
 mt_id = "12100121"
@@ -23,8 +25,9 @@ s3_mt_data = s3_mt_obj['Body'].read().decode('utf-8')
 mt_schema = json.loads(s3_mt_data)
 
 os.makedirs(OUT_PATH, exist_ok=True)
-#gdp_schema = json.load(open("../schema/statcan/" + gdp_id + ".json"))
-#mt_schema = json.load(open("../schema/statcan/" + mt_id + ".json"))
+# gdp_schema = json.load(open(SCHEMA_PATH + gdp_id + ".json"))
+# mt_schema = json.load(open(SCHEMA_PATH + mt_id + ".json"))
+
 
 def main():
     gdp = spark.read.csv(IN_PATH + gdp_id + '/*.csv',
@@ -95,8 +98,8 @@ def main():
                                  mode='overwrite')  # MT_output-> YEAR, NAPCS, Trade, Basis, Total Merch Trade Value
 
     # region Join GDP and MT dataframes based on the 'REF_DATE' -------------> Final Goal (for visualization)
-    final_res = GDP_res.join(MT_res, GDP_res.REF_DATE == MT_res.YEAR, "inner"). \
-        drop(MT_res['YEAR'])  # avoid duplication of "YEAR" column
+    final_res = GDP_res.join(MT_res, GDP_res.REF_DATE == MT_res.YEAR, "inner")\
+        .drop(MT_res['YEAR'])  # avoid duplication of "YEAR" column
     # select only the "Customs" Basis data
     final_df = final_res.where(final_res['Basis'] == 'Customs')
 
