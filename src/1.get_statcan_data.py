@@ -11,7 +11,7 @@ spark = SparkSession.builder.appName('statcan data download').getOrCreate()
 spark.sparkContext.setLogLevel('WARN')
 sc = spark.sparkContext
 
-OUT_PATH = "../data/raw/statcan/"
+OUT_PATH = "s3://mysparks/data/raw/statcan/"
 os.makedirs(OUT_PATH, exist_ok=True)
 
 
@@ -50,6 +50,6 @@ def download_zips(line):
 
 
 if __name__ == "__main__":
-    table_list = sc.parallelize(open('../statcan_url_list.txt', 'r').readlines())
+    table_list = sc.parallelize(open('s3://mysparks/statcan_url_list.txt', 'r').readlines())
     results = table_list.map(download_zips).collect()
     print("stat_can files download results are: ", results)
