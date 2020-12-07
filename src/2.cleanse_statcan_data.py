@@ -8,9 +8,9 @@ spark = SparkSession.builder.appName('statcan data cleanse + schema creation').g
 spark.sparkContext.setLogLevel('WARN')
 sc = spark.sparkContext
 
-IN_PATH = "../data/raw/statcan/"
-OUT_PATH = "../data/clean/statcan/"
-SCHEMA_PATH = "../schema/statcan/"
+IN_PATH = "s3://mysparks/data/raw/statcan/"
+OUT_PATH = "s3://mysparks/data/clean/statcan/"
+SCHEMA_PATH = "s3://mysparks/schema/statcan/"
 os.makedirs(SCHEMA_PATH, exist_ok=True)
 os.makedirs(OUT_PATH, exist_ok=True)
 
@@ -44,7 +44,7 @@ def clean_csv(file_name):
 
 
 if __name__ == "__main__":
-    table_list = open('../statcan_url_list.txt', 'r').readlines()
+    table_list = open('s3://mysparks/statcan_url_list.txt', 'r').readlines()
     input_files = list(map(lambda x: IN_PATH + x.split(':')[1].strip() + ".csv", table_list))
     results = list(map(clean_csv, input_files))
     print(results)
