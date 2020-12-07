@@ -66,7 +66,7 @@ def main():
     exp_avg = exp_int_df.groupBy(year('REF_DATE').alias('YEAR')).agg(
         avg(exp_int_df['household_expenditure']).alias('household_expenditure*(10^6)')).orderBy('YEAR')
 
-    exp_avg.write.csv(OUT_PATH + 'household_consumption_output', header='true', mode='overwrite')
+    exp_avg.coalesce(1).write.csv(OUT_PATH + 'household_consumption_output', header='true', mode='overwrite')
 
 
 if __name__ == '__main__':
