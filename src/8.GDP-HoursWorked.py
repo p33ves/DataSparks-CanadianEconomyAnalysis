@@ -12,6 +12,9 @@ from pyspark.sql.functions import to_date, lit, year, avg, split
 
 IN_PATH = "s3://mysparks/data/clean/statcan/"
 OUT_PATH = "s3://mysparks/OUTPUT-Folder/"
+#IN_PATH = "../data/clean/statcan/"
+#OUT_PATH = "../OUTPUT-Folder/"
+
 gdp_id = "36100434"
 hrs_id = "14100289"
 GDP_SCHEMA_PATH = "schema/statcan/" + gdp_id + ".json"

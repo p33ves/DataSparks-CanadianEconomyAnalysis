@@ -13,6 +13,9 @@ from pyspark.sql.functions import to_date, lit, year, avg
 
 IN_PATH = "s3://mysparks/data/clean/statcan/"
 OUT_PATH = "s3://mysparks/OUTPUT-Folder/"
+#IN_PATH = "../data/clean/statcan/"
+#OUT_PATH = "../OUTPUT-Folder/"
+
 exp_id = "36100124"
 SCHEMA_PATH = "schema/statcan/" + exp_id + ".json"
 

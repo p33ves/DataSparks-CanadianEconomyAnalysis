@@ -9,6 +9,10 @@ from pyspark.sql.functions import to_date, avg
 
 IN_PATH = "s3://mysparks/data/clean/statcan/"
 OUT_PATH = "s3://mysparks/OUTPUT-Folder/"
+
+#IN_PATH = "../data/clean/statcan/"
+#OUT_PATH = "../OUTPUT-Folder/"
+
 SCHEMA_PATH = "schema/statcan/"
 retail_id = "20100008"
 

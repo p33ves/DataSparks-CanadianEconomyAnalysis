@@ -6,6 +6,9 @@ from pyspark.sql.functions import to_date, avg
 
 IN_PATH = "s3://mysparks/data/clean/statcan/"
 OUT_PATH = "s3://mysparks/OUTPUT-Folder/"
+#IN_PATH = "../data/clean/statcan/"
+#OUT_PATH = "../OUTPUT-Folder/"
+
 SCHEMA_PATH = "schema/statcan/"
 gdp_id = "36100434"
 mt_id = "12100121"

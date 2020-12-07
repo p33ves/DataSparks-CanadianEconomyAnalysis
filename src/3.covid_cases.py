@@ -7,6 +7,9 @@ from pyspark.sql.functions import when, first
 
 IN_PATH = "s3://mysparks/data/raw/statcan/"
 OUT_PATH = "s3://mysparks/OUTPUT-Folder/"
+#IN_PATH = "../data/clean/statcan/"
+#OUT_PATH = "../OUTPUT-Folder/"
+
 SCHEMA_PATH = "schema/statcan/"
 cc_id = "13100781"
 
