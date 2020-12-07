@@ -52,6 +52,9 @@ def main():
     ########################################### Business Indicators Operations #####################################
     checkNull1 = buss.filter(buss['REF_DATE'].isNotNull() & buss['VALUE'].isNotNull()).withColumn('REF_DATE', to_date(
         buss['REF_DATE'], 'yyyy-MM'))
+    # selecting business indicator for year 2010, which acts as basis for the decade 2010 to 2020
+    checkNull1 = checkNull1.where(checkNull1['REF_DATE'].between(
+          datetime.datetime.strptime('2010-01-01', '%Y-%m-%d'), datetime.datetime.strptime('2010-12-01', '%Y-%m-%d')))
     # to select valid Smoothed Composite index values for indicators
     buss1 = checkNull1.where(checkNull1['VALUE'] > 0).where(checkNull1['Composite index'] == 'Smoothed')
     buss1 = checkNull1.groupby('REF_DATE', 'Leading Indicators').sum('VALUE').withColumnRenamed('REF_DATE', 'YEAR')
