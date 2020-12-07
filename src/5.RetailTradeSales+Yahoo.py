@@ -38,7 +38,7 @@ yahoo_schema = types.StructType([
 def main():
     retail = spark.read.csv(IN_PATH + retail_id + '/*.csv',
                             schema=types.StructType.fromJson(retail_schema))  # reading 'RetailTradeSales' csv Data
-    yahoo = spark.read.csv('../data/YahooFinance.csv',
+    yahoo = spark.read.csv('s3://mysparks/data/YahooFinance.csv',
                            schema=yahoo_schema)  # reading seasonal stock prices from 'YahooFinance' csv Data
 
     # region Retail Trade Operations
