@@ -17,6 +17,7 @@ input_schema = json.loads(s3_cc_data)
 
 os.makedirs(OUT_PATH, exist_ok=True)
 
+#input_schema = json.load(open("../schema/statcan/" + cc_id + ".json"))
 
 def boolean_interpreter(new_df, column_name: str) -> dataframe.DataFrame:
     new_df = new_df.withColumn(column_name + '_interpreted',

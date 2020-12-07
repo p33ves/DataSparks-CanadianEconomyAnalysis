@@ -18,6 +18,7 @@ s3_retail_data = s3_retail_obj['Body'].read().decode('utf-8')
 retail_schema = json.loads(s3_retail_data)
 
 os.makedirs(OUT_PATH, exist_ok=True)
+#retail_schema = json.load(open("../schema/statcan/" + retail_id + ".json"))
 
 yahoo_schema = types.StructType([
     types.StructField('REF_DATE', types.StringType()),

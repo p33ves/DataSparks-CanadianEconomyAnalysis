@@ -31,6 +31,10 @@ retail_schema = json.loads(s3_retail_data)
 
 os.makedirs(OUT_PATH, exist_ok=True)
 
+#gdp_schema = json.load(open("../schema/statcan/" + gdp_id + ".json"))
+#cpi_schema = json.load(open("../schema/statcan/" + cpi_id + ".json"))
+#cc_schema = json.load(open("../schema/statcan/" + cc_id + ".json"))
+#retail_schema = json.load(open("../schema/statcan/" + retail_id + ".json"))
 
 def main():
     gdp = spark.read.csv(OUT_PATH + 'GDP_output/*.csv',

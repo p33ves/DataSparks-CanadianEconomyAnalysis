@@ -28,6 +28,9 @@ hours_schema = json.loads(s3_hours_data)
 
 os.makedirs(OUT_PATH, exist_ok=True)
 
+#gdp_schema = json.load(open("../schema/statcan/" + gdp_id + ".json"))
+#hours_schema = json.load(open("../schema/statcan/" + hrs_id + ".json"))
+
 def main():
     ########################Processing GDP Data##################################
     gdp_df = spark.read.csv(IN_PATH + gdp_id + '/*.csv',

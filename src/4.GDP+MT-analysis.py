@@ -20,6 +20,8 @@ s3_mt_data = s3_mt_obj['Body'].read().decode('utf-8')
 mt_schema = json.loads(s3_mt_data)
 
 os.makedirs(OUT_PATH, exist_ok=True)
+#gdp_schema = json.load(open("../schema/statcan/" + gdp_id + ".json"))
+#mt_schema = json.load(open("../schema/statcan/" + mt_id + ".json"))
 
 def main():
     gdp = spark.read.csv(IN_PATH + gdp_id + '/*.csv',

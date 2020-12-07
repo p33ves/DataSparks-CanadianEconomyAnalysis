@@ -21,6 +21,8 @@ s3_bus_data = s3_bus_obj['Body'].read().decode('utf-8')
 Business_schema = json.loads(s3_bus_data)
 
 os.makedirs(OUT_PATH, exist_ok=True)
+#TSX_schema = json.load(open("../schema/statcan/" + tsx_id + ".json"))
+#Business_schema = json.load(open("../schema/statcan/" + bus_id + ".json"))
 
 def main():
     tsx = spark.read.csv(IN_PATH + tsx_id + '/*.csv',

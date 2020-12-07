@@ -19,6 +19,7 @@ s3_cpi_data = s3_cpi_obj['Body'].read().decode('utf-8')
 cpi_schema = json.loads(s3_cpi_data)
 
 os.makedirs(OUT_PATH, exist_ok=True)
+#cpi_schema = json.load(open("../schema/statcan/" + cpi_id + ".json"))
 
 def main():
     cpi_df = spark.read.csv(IN_PATH + cpi_id + '/*.csv',
