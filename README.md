@@ -47,3 +47,22 @@ https://open.canada.ca/data/en/dataset/a0ac9f2f-b993-4653-9798-8871d7b1db3e
 https://finance.yahoo.com/quote/%5EGSPTSE/history?period1=948672000&period2=1603497600&interval=1d&filter=history&frequency=1d&includeAdjustedClose=true
 
 Technologies : Spark (RDD/Dataframes) with Amazon Web Services for ETL and processing, Python (pandas/matplotlib/seaborn/flask) for data visualization and dashboard creation
+
+STEPS FOR BIG DATA PROJECT EXECUTION:
+=====================================
+
+1. python 1.get_statcan_data.py  ---> Data is downloaded at "../data/raw/statcan/..."
+2. spark-submit 2.cleanse_statcan_data.py  ---> Cleaning the data and storing at "../data/clean/statcan/...", Storing the schema at "../schema/statcan/.."
+ 
+Below code files are stored in the "src" folder in GitHub and in "ProjectCode" in AWS and their output will be in "OUTPUT-Folder" 
+
+3. spark-submit 3.covid_cases.py
+4. spark-submit 4.GDP+MT-analysis.py
+5. spark-submit 5.RetailTradeSales+Yahoo.py
+6. spark-submit 6.IMF+FDindex---pending
+7. spark-submit 7.CPI-analysis.py
+8. spark-submit 8.GDP-HoursWorked.py
+9. spark-submit 9.TSX+Business.py
+10. spark-submit 10.RetailTrade-GDPvsSales.py
+11. spark-submit 11.healthcare_analysis.py
+12. spark-submit 12.householdconsumption.py
