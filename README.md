@@ -2,7 +2,7 @@
 BIG DATA LAB PROJECT PROPOSAL
 
 TITLE : Pre and Post Covid-19 analysis of Canadian Economy  
-TEAM : Raksha Harish, Vignesh Perumal, Anjali Thomas  
+TEAM "DataSparks" : Raksha Harish, Vignesh Perumal, Anjali Thomas  
 
 Description : 
 In this project we aim to perform a comparative study of economic activity in Canada pre and post-covid19. We would be looking towards www150.statcan.gc.ca for our base datasets 
