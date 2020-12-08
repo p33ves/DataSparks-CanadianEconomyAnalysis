@@ -7,20 +7,20 @@ from pyspark.sql.functions import when, first
 
 IN_PATH = "s3://mysparks/data/raw/statcan/"
 OUT_PATH = "s3://mysparks/OUTPUT-Folder/"
-#IN_PATH = "../data/clean/statcan/"
-#OUT_PATH = "../OUTPUT-Folder/"
-
 SCHEMA_PATH = "schema/statcan/"
+# IN_PATH = "../data/clean/statcan/"
+# OUT_PATH = "../OUTPUT-Folder/"
+# SCHEMA_PATH = "../schema/statcan/"
 cc_id = "13100781"
 
 s3_obj = boto3.client('s3')
 s3_cc_obj = s3_obj.get_object(Bucket='mysparks', Key=SCHEMA_PATH + cc_id + ".json")
 s3_cc_data = s3_cc_obj['Body'].read().decode('utf-8')
 input_schema = json.loads(s3_cc_data)
+# input_schema = json.load(open("../schema/statcan/" + cc_id + ".json"))
 
 os.makedirs(OUT_PATH, exist_ok=True)
 
-#input_schema = json.load(open("../schema/statcan/" + cc_id + ".json"))
 
 def boolean_interpreter(new_df, column_name: str) -> dataframe.DataFrame:
     new_df = new_df.withColumn(column_name + '_interpreted',
@@ -32,7 +32,7 @@ def boolean_interpreter(new_df, column_name: str) -> dataframe.DataFrame:
 
 
 def main():
-    raw_input = spark.read.csv(IN_PATH + cc_id + '.csv',
+    raw_input = spark.read.csv(IN_PATH + cc_id + '/*.csv',
                                header=True,
                                schema=types.StructType.fromJson(input_schema))  # reading COVID-19 Data csv
 
@@ -184,9 +184,52 @@ def main():
     new_df = boolean_interpreter(new_df, "Death")
     # endregion
 
+    new_df.cache()
     with open(SCHEMA_PATH + "covid_cases.json", 'w') as out_file:
         out_file.write(new_df.schema.json())
     new_df.coalesce(40).write.csv(OUT_PATH + "covid_cases", header=True, mode='overwrite')
+
+    # region Provincial covid data
+    weekly_cases = new_df.groupby(new_df['Episode week'], new_df['Region'])
+    international_transmission = new_df.filter(new_df['Transmission'].like("%International%travel%"))\
+        .groupby(new_df['Episode week'], new_df['Region']).count() \
+        .withColumnRenamed('count', 'International Transmissions').withColumnRenamed('Region', 'Area')
+    asymptomatic_cases = new_df.filter(new_df['Asymptomatic']).groupby(new_df['Episode week'], new_df['Region'])\
+        .count().withColumnRenamed('count', 'Asymptomatic cases').withColumnRenamed('Region', 'Area')
+    recovered_weekly = new_df.filter(new_df['Recovered']).groupby(new_df['Recovery week'], new_df['Region'])
+    deaths_weekly = new_df.filter(new_df['Death']).groupby(new_df['Episode week'], new_df['Region'])
+    new_cases = weekly_cases.count() \
+        .withColumnRenamed('Episode week', 'Week Number').withColumnRenamed('count', 'Total New cases')
+    age_splits = weekly_cases.pivot('Age_group',
+                                    ["0-19", "20-29", "30-39", "40-49", "50-59", "60-69", "70-79", "80 <=",
+                                     "Not Stated"]) \
+        .count().withColumnRenamed('Region', 'Area').withColumnRenamed('Episode week', 'Ep Week')
+    recovered_cases = recovered_weekly.count().withColumnRenamed('count', 'Recovered cases')\
+        .withColumnRenamed('Region', 'Area')
+    deaths = deaths_weekly.count().withColumnRenamed('count', 'Deaths').withColumnRenamed('Region', 'Area') \
+        .withColumnRenamed('Episode week', 'Week No')
+
+    # Joining all properties required from covid_cases
+    covid_provinces = new_cases.join(recovered_cases, (new_cases['Week Number'] == recovered_cases['Recovery week'])
+                                     & (new_cases['Region'] == recovered_cases['Area']), 'left') \
+        .drop(recovered_cases['Recovery week']).drop(recovered_cases['Area']) \
+        .join(deaths, (new_cases['Week Number'] == deaths['Week No'])
+              & (new_cases['Region'] == deaths['Area']), 'left').drop(deaths['Week No']).drop(deaths['Area']) \
+        .join(age_splits, (new_cases['Week Number'] == age_splits['Ep Week'])
+              & (new_cases['Region'] == age_splits['Area']), 'left')\
+        .drop(age_splits['Ep Week']).drop(age_splits['Area']) \
+        .join(international_transmission, (new_cases['Week Number'] == international_transmission['Episode week'])
+              & (new_cases['Region'] == international_transmission['Area']), 'left') \
+        .drop(international_transmission['Episode week']).drop(international_transmission['Area']) \
+        .join(asymptomatic_cases, (new_cases['Week Number'] == asymptomatic_cases['Episode week'])
+              & (new_cases['Region'] == asymptomatic_cases['Area']), 'left') \
+        .drop(asymptomatic_cases['Episode week']).drop(asymptomatic_cases['Area'])
+    # endregion
+
+    with open(SCHEMA_PATH + "provincial_cases.json", 'w') as out_file:
+        out_file.write(covid_provinces.schema.json())
+    covid_provinces.orderBy('Week Number').coalesce(1).fillna(0)\
+        .write.csv(OUT_PATH + "provincial_cases", header=True, mode='overwrite')
 
 
 if __name__ == '__main__':
