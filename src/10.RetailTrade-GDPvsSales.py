@@ -12,7 +12,7 @@ from pyspark.sql.functions import to_date, lit, year, avg, round
 
 IN_PATH = "s3://mysparks/data/clean/statcan/"
 OUT_PATH = "s3://mysparks/OUTPUT-Folder/"
-SCHEMA_PATH = "s3://mysparks/schema/statcan/"
+SCHEMA_PATH = "schema/statcan/"
 gdp_id = "36100434"
 trade_id = "20100008"
 os.makedirs(OUT_PATH, exist_ok=True)

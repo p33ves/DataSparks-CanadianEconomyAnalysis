@@ -17,7 +17,7 @@ OUT_PATH = "s3://mysparks/OUTPUT-Folder/"
 #OUT_PATH = "../OUTPUT-Folder/"
 
 exp_id = "36100124"
-SCHEMA_PATH = "s3://mysparks/schema/statcan/" + exp_id + ".json"
+SCHEMA_PATH = "schema/statcan/" + exp_id + ".json"
 
 s3_obj = boto3.client('s3')
 s3_exp_obj = s3_obj.get_object(Bucket='mysparks', Key=SCHEMA_PATH)
