@@ -185,7 +185,7 @@ def main():
     # endregion
 
     new_df.cache()
-    with open(SCHEMA_PATH + "covid_cases.json", 'w') as out_file:
+    with open("s3://mysparks/" + SCHEMA_PATH + "covid_cases.json", 'w') as out_file:
         out_file.write(new_df.schema.json())
     new_df.coalesce(40).write.csv(OUT_PATH + "covid_cases", header=True, mode='overwrite')
 
@@ -226,7 +226,7 @@ def main():
         .drop(asymptomatic_cases['Episode week']).drop(asymptomatic_cases['Area'])
     # endregion
 
-    with open(SCHEMA_PATH + "provincial_cases.json", 'w') as out_file:
+    with open("s3://mysparks/" + SCHEMA_PATH + "provincial_cases.json", 'w') as out_file:
         out_file.write(covid_provinces.schema.json())
     covid_provinces.orderBy('Week Number').coalesce(1).fillna(0)\
         .write.csv(OUT_PATH + "provincial_cases", header=True, mode='overwrite')
