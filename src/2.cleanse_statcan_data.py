@@ -1,5 +1,6 @@
 import os
 import sys
+import boto3
 
 from pyspark.sql import SparkSession
 
@@ -11,8 +12,9 @@ sc = spark.sparkContext
 IN_PATH = "s3://mysparks/data/raw/statcan/"
 OUT_PATH = "s3://mysparks/data/clean/statcan/"
 SCHEMA_PATH = "s3://mysparks/schema/statcan/"
-os.makedirs(SCHEMA_PATH, exist_ok=True)
-os.makedirs(OUT_PATH, exist_ok=True)
+s3_obj = boto3.client('s3')
+# os.makedirs(SCHEMA_PATH, exist_ok=True)
+# os.makedirs(OUT_PATH, exist_ok=True)
 
 
 def clean_csv(file_name):
@@ -36,8 +38,8 @@ def clean_csv(file_name):
             .option("header", "true") \
             .csv(OUT_PATH + table_id)
         os.remove(file_name)
-        with open(SCHEMA_PATH + table_id + ".json", 'w') as out_file:
-            out_file.write(input_data.schema.json())
+        s3_obj.put_object(Body=input_data.schema.json(),
+                          Bucket='mysparks', Key=SCHEMA_PATH + table_id + ".json")
         return {table_id: "Successful"}
     except Exception as err:
         return {table_id: err}
