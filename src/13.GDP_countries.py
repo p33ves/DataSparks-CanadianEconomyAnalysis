@@ -11,7 +11,7 @@ from pyspark.sql.functions import to_date, lit, year, broadcast
 # Gdp analysis of top 10 countries
 
 IN_PATH = "s3://mysparks/data/gdp/"
-OUT_PATH = "s3://mysparks/OUTPUT-Folder/gdp/"
+OUT_PATH = "s3://mysparks/OUTPUT-Folder/"
 # IN_PATH = "/home/at/project/gdp/GDPCountries/"
 # OUT_PATH = "/home/at/project/gdp/out/"
 

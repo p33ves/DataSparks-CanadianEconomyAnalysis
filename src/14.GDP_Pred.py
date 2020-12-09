@@ -59,7 +59,7 @@ def main():
 	hours = hours_ind.select(hours_ind['YEAR'],(hours_ind['HOURS_WORKED']*1000).alias('Hours_Worked'),hours_ind['labour_productivity'])
 
 	########################CPI##################################
-	cpi_df = spark.read.csv(IN_PATH + 'cpi.csv', schema=cpi_schema)
+	cpi_df = spark.read.csv(IN_PATH + 'CPI_output/' + '*.csv', schema=cpi_schema)
 
 	cpi_can = cpi_df.select(cpi_df['YEAR'],(cpi_df['Canada']).alias('CPI'))
 
@@ -87,7 +87,7 @@ def main():
 				.join(mt, ['YEAR'])\
 				.join(exp, ['YEAR'])
 
-	gdp.coalesce(1).write.csv(OUT_PATH + 'gdp_pred', header='true', mode='overwrite')
+	gdp.coalesce(1).write.csv(OUT_PATH + 'gdp_pred_input', header='true', mode='overwrite')
 
 
 if __name__ == '__main__':
