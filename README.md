@@ -82,4 +82,4 @@ a) To setup AWS EMR-Spark Cluster session : Key Pair Created - "datasparks"
    -> "DataSparks.pem" --- for linux/mac  
    -> "dataKey.ppk" --- converted by PuttyGen for Windows  
 b) An S3 storage bucket called "mysparks" has been created which contains the input data folder, Project code folder and the output folder  
-c) The files from the output folder in S3 bucket "mysparks" is used for data visualization in AWS QuickSight Tool
+c) The files from the output folder in S3 bucket "mysparks" is loaded into a different S3 bucket called "datasparks-output". This new S3 bucket is linked with the AWS QuickSight Tool for data visualization and Dashboard creation.
