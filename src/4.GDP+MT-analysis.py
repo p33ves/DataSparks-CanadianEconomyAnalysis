@@ -24,7 +24,7 @@ s3_mt_obj = s3_obj.get_object(Bucket='mysparks', Key=SCHEMA_PATH + mt_id + ".jso
 s3_mt_data = s3_mt_obj['Body'].read().decode('utf-8')
 mt_schema = json.loads(s3_mt_data)
 
-os.makedirs(OUT_PATH, exist_ok=True)
+# os.makedirs(OUT_PATH, exist_ok=True)
 # gdp_schema = json.load(open(SCHEMA_PATH + gdp_id + ".json"))
 # mt_schema = json.load(open(SCHEMA_PATH + mt_id + ".json"))
 
@@ -88,12 +88,10 @@ def main():
     # endregion
 
     # to save final results of GDP and MT operations in 2 different folders
-    with open(SCHEMA_PATH + "gdp.json", 'w') as out_file:
-        out_file.write(GDP_res.schema.json())
+    s3_obj.put_object(Body=GDP_res.schema.json(), Bucket='mysparks', Key=SCHEMA_PATH + "gdp.json")
     GDP_res.coalesce(1).write.csv(OUT_PATH + 'GDP_output', header='true',
                                   mode='overwrite')  # GDP_output-> REF_DATE, NAICS, Total GDP Value
-    with open(SCHEMA_PATH + "mt.json", 'w') as out_file:
-        out_file.write(MT_res.schema.json())
+    s3_obj.put_object(Body=MT_res.schema.json(), Bucket='mysparks', Key=SCHEMA_PATH + "mt.json")
     MT_res.coalesce(1).write.csv(OUT_PATH + 'MT_output', header='true',
                                  mode='overwrite')  # MT_output-> YEAR, NAPCS, Trade, Basis, Total Merch Trade Value
 

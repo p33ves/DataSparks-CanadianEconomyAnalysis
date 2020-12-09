@@ -21,8 +21,8 @@ s3_cpi_obj = s3_obj.get_object(Bucket='mysparks', Key=SCHEMA_PATH)
 s3_cpi_data = s3_cpi_obj['Body'].read().decode('utf-8')
 cpi_schema = json.loads(s3_cpi_data)
 
-os.makedirs(OUT_PATH, exist_ok=True)
-#cpi_schema = json.load(open("../schema/statcan/" + cpi_id + ".json"))
+# os.makedirs(OUT_PATH, exist_ok=True)
+# cpi_schema = json.load(open("../schema/statcan/" + cpi_id + ".json"))
 
 def main():
     cpi_df = spark.read.csv(IN_PATH + cpi_id + '/*.csv',
@@ -48,8 +48,7 @@ def main():
     result_cpi_df = province_df.groupby(year('REF_DATE').alias('YEAR')).pivot('GEO').agg(
         round(avg('VALUE'), 2)).orderBy('YEAR')
 
-    with open(SCHEMA_PATH + "cpi.json", 'w') as out_file:
-        out_file.write(result_cpi_df.schema.json())
+    s3_obj.put_object(Body=result_cpi_df.schema.json(), Bucket='mysparks', Key=SCHEMA_PATH + "cpi.json")
     result_cpi_df.coalesce(1).write.csv(OUT_PATH + 'Canada_CPI_output', header='true', mode='overwrite')
 
 

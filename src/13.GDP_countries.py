@@ -12,10 +12,10 @@ from pyspark.sql.functions import to_date, lit, year, broadcast
 
 IN_PATH = "s3://mysparks/data/gdp/"
 OUT_PATH = "s3://mysparks/OUTPUT-Folder/gdp/"
-#IN_PATH = "/home/at/project/gdp/GDPCountries/"
-#OUT_PATH = "/home/at/project/gdp/out/"
+# IN_PATH = "/home/at/project/gdp/GDPCountries/"
+# OUT_PATH = "/home/at/project/gdp/out/"
 
-os.makedirs(OUT_PATH, exist_ok=True)
+# os.makedirs(OUT_PATH, exist_ok=True)
 
 can_schema = types.StructType([
 	types.StructField('DATE', types.StringType()),

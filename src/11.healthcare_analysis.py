@@ -139,8 +139,9 @@ def main():
         .drop(final_df['Month'])
     final_df = final_df.withColumn('Month', functions.coalesce(final_df['ProperMonth'], final_df['REF_DATE'])) \
         .drop(final_df['ProperMonth']).drop(final_df['REF_DATE'])
-    with open("s3://mysparks/" + SCHEMA_PATH + "healthcare_analysis.json", 'w') as out_file:
-        out_file.write(final_df.schema.json())
+
+    s3_obj.put_object(Body=final_df.schema.json(),
+                      Bucket='mysparks', Key=SCHEMA_PATH + "healthcare_analysis.json")
     final_df.coalesce(1).orderBy('Month') \
         .write.csv(OUT_PATH + 'healthcare_analysis', header='true', mode='overwrite')
     # endregion

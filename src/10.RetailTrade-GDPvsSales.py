@@ -15,7 +15,7 @@ OUT_PATH = "s3://mysparks/OUTPUT-Folder/"
 SCHEMA_PATH = "schema/statcan/"
 gdp_id = "36100434"
 trade_id = "20100008"
-os.makedirs(OUT_PATH, exist_ok=True)
+# os.makedirs(OUT_PATH, exist_ok=True)
 gdp_schema = json.load(open(SCHEMA_PATH + gdp_id + ".json"))
 trade_sales_schema = json.load(open(SCHEMA_PATH + trade_id + ".json"))
 

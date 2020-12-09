@@ -29,10 +29,9 @@ s3_hours_obj = s3_obj.get_object(Bucket='mysparks', Key=HOURS_SCHEMA_PATH)
 s3_hours_data = s3_hours_obj['Body'].read().decode('utf-8')
 hours_schema = json.loads(s3_hours_data)
 
-os.makedirs(OUT_PATH, exist_ok=True)
-
-#gdp_schema = json.load(open("../schema/statcan/" + gdp_id + ".json"))
-#hours_schema = json.load(open("../schema/statcan/" + hrs_id + ".json"))
+# os.makedirs(OUT_PATH, exist_ok=True)
+# gdp_schema = json.load(open("../schema/statcan/" + gdp_id + ".json"))
+# hours_schema = json.load(open("../schema/statcan/" + hrs_id + ".json"))
 
 def main():
     ########################Processing GDP Data##################################

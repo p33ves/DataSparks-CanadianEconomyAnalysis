@@ -24,8 +24,8 @@ s3_exp_obj = s3_obj.get_object(Bucket='mysparks', Key=SCHEMA_PATH)
 s3_exp_data = s3_exp_obj['Body'].read().decode('utf-8')
 exp_schema = json.loads(s3_exp_data)
 
-os.makedirs(OUT_PATH, exist_ok=True)
-#exp_schema = json.load(open("../schema/statcan/" + exp_id + ".json"))
+# os.makedirs(OUT_PATH, exist_ok=True)
+# exp_schema = json.load(open("../schema/statcan/" + exp_id + ".json"))
 
 def main():
     ########################Processing Detailed household final consumption expenditure, Canada, quarterly Data##################################

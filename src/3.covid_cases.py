@@ -18,8 +18,7 @@ s3_cc_obj = s3_obj.get_object(Bucket='mysparks', Key=SCHEMA_PATH + cc_id + ".jso
 s3_cc_data = s3_cc_obj['Body'].read().decode('utf-8')
 input_schema = json.loads(s3_cc_data)
 # input_schema = json.load(open("../schema/statcan/" + cc_id + ".json"))
-
-os.makedirs(OUT_PATH, exist_ok=True)
+# os.makedirs(OUT_PATH, exist_ok=True)
 
 
 def boolean_interpreter(new_df, column_name: str) -> dataframe.DataFrame:
@@ -185,8 +184,8 @@ def main():
     # endregion
 
     new_df.cache()
-    with open("s3://mysparks/" + SCHEMA_PATH + "covid_cases.json", 'w') as out_file:
-        out_file.write(new_df.schema.json())
+    s3_obj.put_object(Body=new_df.schema.json(),
+                      Bucket='mysparks', Key=SCHEMA_PATH + "covid_cases.json")
     new_df.coalesce(40).write.csv(OUT_PATH + "covid_cases", header=True, mode='overwrite')
 
     # region Provincial covid data
@@ -226,8 +225,8 @@ def main():
         .drop(asymptomatic_cases['Episode week']).drop(asymptomatic_cases['Area'])
     # endregion
 
-    with open("s3://mysparks/" + SCHEMA_PATH + "provincial_cases.json", 'w') as out_file:
-        out_file.write(covid_provinces.schema.json())
+    s3_obj.put_object(Body=covid_provinces.schema.json(),
+                      Bucket='mysparks', Key=SCHEMA_PATH + "provincial_cases.json")
     covid_provinces.orderBy('Week Number').coalesce(1).fillna(0)\
         .write.csv(OUT_PATH + "provincial_cases", header=True, mode='overwrite')
 

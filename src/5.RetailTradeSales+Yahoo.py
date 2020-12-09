@@ -21,7 +21,7 @@ s3_retail_obj = s3_obj.get_object(Bucket='mysparks', Key=SCHEMA_PATH + retail_id
 s3_retail_data = s3_retail_obj['Body'].read().decode('utf-8')
 retail_schema = json.loads(s3_retail_data)
 
-os.makedirs(OUT_PATH, exist_ok=True)
+# os.makedirs(OUT_PATH, exist_ok=True)
 #retail_schema = json.load(open("../schema/statcan/" + retail_id + ".json"))
 
 yahoo_schema = types.StructType([
@@ -69,8 +69,8 @@ def main():
     # Retail_df output
     retail1.coalesce(1).write.csv(OUT_PATH + 'Retail1_output', header=True,
                                   mode='overwrite')  # Province-wise Retail Trade values
-    with open(SCHEMA_PATH + "retailsales_canada.json", 'w') as out_file:
-        out_file.write(retail2.schema.json())
+
+    s3_obj.put_object(Body=retail2.schema.json(), Bucket='mysparks', Key=SCHEMA_PATH + "retailsales_canada.json")
     retail2.coalesce(1).write.csv(OUT_PATH + 'Retail2_output', header=True,
                                   mode='overwrite')  # Industry-wise Retail Trade values for all provinces
     # endregion

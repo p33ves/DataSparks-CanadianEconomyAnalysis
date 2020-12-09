@@ -12,7 +12,7 @@ spark.sparkContext.setLogLevel('WARN')
 sc = spark.sparkContext
 
 OUT_PATH = "s3://mysparks/data/raw/statcan/"
-os.makedirs(OUT_PATH, exist_ok=True)
+# os.makedirs(OUT_PATH, exist_ok=True)
 
 
 def download_zips(line):
