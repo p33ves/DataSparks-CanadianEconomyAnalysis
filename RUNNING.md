@@ -1,7 +1,7 @@
 STEPS FOR PROJECT EXECUTION :
 ==============================
 
-1. python 1.get_statcan_data.py ---> Data is downloaded at "../data/raw/statcan/..."
+1. spark-submit 1.get_statcan_data.py ---> Data is downloaded at "../data/raw/statcan/..."
 2. spark-submit 2.cleanse_statcan_data.py ---> Cleaning the data and storing at "../data/clean/statcan/...", Storing the schema at "../schema/statcan/.."
 
 Below code files are stored in the "src" folder in GitHub and in "ProjectCode" in AWS and their output will be in "OUTPUT-Folder"
@@ -9,7 +9,7 @@ Below code files are stored in the "src" folder in GitHub and in "ProjectCode" i
 3. spark-submit 3.covid_cases.py
 4. spark-submit 4.GDP+MT-analysis.py
 5. spark-submit 5.RetailTradeSales+Yahoo.py
-6. spark-submit 6.IMF+FDindex---pending
+6. spark-submit 6.IMF+FDindex
 7. spark-submit 7.CPI-analysis.py
 8. spark-submit 8.GDP-HoursWorked.py
 9. spark-submit 9.TSX+Business.py
