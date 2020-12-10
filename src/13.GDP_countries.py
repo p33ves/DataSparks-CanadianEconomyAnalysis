@@ -11,7 +11,7 @@ from pyspark.sql.functions import to_date, lit, year, broadcast
 # Gdp analysis of top 10 countries
 
 IN_PATH = "s3://mysparks/data/gdp/"
-OUT_PATH = "s3://mysparks/OUTPUT-Folder/gdp/"
+OUT_PATH = "s3://mysparks/OUTPUT-Folder/"
 # IN_PATH = "/home/at/project/gdp/GDPCountries/"
 # OUT_PATH = "/home/at/project/gdp/out/"
 
@@ -75,7 +75,7 @@ def main():
 	# fetch data for the last 20 years
 	can_decade_df = can_notnull_df.where(
 		can_notnull_df['DATE'].between(datetime.datetime.strptime('01-01-1999', '%d-%m-%Y'),
-										   datetime.datetime.strptime('01-01-2019', '%d-%m-%Y')))
+										   datetime.datetime.strptime('01-01-2020', '%d-%m-%Y')))
 
 	# Convert GDP to billions
 	can_gdpb_df = can_decade_df.withColumn(
@@ -101,7 +101,7 @@ def main():
 	# fetch data for the last 20 years
 	us_decade_df = us_notnull_df.where(
 		us_notnull_df['DATE'].between(datetime.datetime.strptime('30-09-1999', '%d-%m-%Y'),
-										   datetime.datetime.strptime('30-09-2019', '%d-%m-%Y')))
+										   datetime.datetime.strptime('30-09-2020	', '%d-%m-%Y')))
 		
 	# convert 'REF_DATE' to date type
 	us_date = us_decade_df.withColumn('DATE', to_date(us_decade_df['DATE'], 'yyyy-MM'))
@@ -123,7 +123,7 @@ def main():
 	# fetch data for the last 20 years
 	ind_decade_df = ind_notnull_df.where(
 		ind_notnull_df['DATE'].between(datetime.datetime.strptime('01-01-1999', '%d-%m-%Y'),
-										   datetime.datetime.strptime('01-01-2019', '%d-%m-%Y')))
+										   datetime.datetime.strptime('01-01-2020	', '%d-%m-%Y')))
 
 	# Convert GDP to billions
 	ind_gdpb_df = ind_decade_df.withColumn(
@@ -148,7 +148,7 @@ def main():
 	# fetch data for the last 20 years
 	bzl_decade_df = bzl_notnull_df.where(
 		bzl_notnull_df['DATE'].between(datetime.datetime.strptime('01-01-1999', '%d-%m-%Y'),
-										   datetime.datetime.strptime('01-01-2019', '%d-%m-%Y')))
+										   datetime.datetime.strptime('01-01-2020	', '%d-%m-%Y')))
 
 	# Convert GDP to billions
 	bzl_gdpb_df = bzl_decade_df.withColumn(
@@ -173,7 +173,7 @@ def main():
 	# fetch data for the last 20 years
 	chn_decade_df = chn_notnull_df.where(
 		chn_notnull_df['DATE'].between(datetime.datetime.strptime('01-01-1999', '%d-%m-%Y'),
-										   datetime.datetime.strptime('01-01-2019', '%d-%m-%Y')))
+										   datetime.datetime.strptime('01-01-2020	', '%d-%m-%Y')))
 
 	# Convert GDP to billions
 	chn_gdpb_df = chn_decade_df.withColumn(
@@ -198,7 +198,7 @@ def main():
 	# fetch data for the last 20 years
 	frn_decade_df = frn_notnull_df.where(
 		frn_notnull_df['DATE'].between(datetime.datetime.strptime('01-01-1999', '%d-%m-%Y'),
-										   datetime.datetime.strptime('01-01-2019', '%d-%m-%Y')))
+										   datetime.datetime.strptime('01-01-2020	', '%d-%m-%Y')))
 
 	# Convert GDP to billions
 	frn_gdpb_df = frn_decade_df.withColumn(
@@ -223,7 +223,7 @@ def main():
 	# fetch data for the last 20 years
 	ger_decade_df = ger_notnull_df.where(
 		ger_notnull_df['DATE'].between(datetime.datetime.strptime('01-01-1999', '%d-%m-%Y'),
-										   datetime.datetime.strptime('01-01-2019', '%d-%m-%Y')))
+										   datetime.datetime.strptime('01-01-2020	', '%d-%m-%Y')))
 
 	# Convert GDP to billions
 	ger_gdpb_df = ger_decade_df.withColumn(
@@ -248,7 +248,7 @@ def main():
 	# fetch data for the last 20 years
 	itl_decade_df = itl_notnull_df.where(
 		itl_notnull_df['DATE'].between(datetime.datetime.strptime('01-01-1999', '%d-%m-%Y'),
-										   datetime.datetime.strptime('01-01-2019', '%d-%m-%Y')))
+										   datetime.datetime.strptime('01-01-2020	', '%d-%m-%Y')))
 
 	# Convert GDP to billions
 	itl_gdpb_df = itl_decade_df.withColumn(
@@ -273,7 +273,7 @@ def main():
 	# fetch data for the last 20 years
 	jap_decade_df = jap_notnull_df.where(
 		jap_notnull_df['DATE'].between(datetime.datetime.strptime('01-01-1999', '%d-%m-%Y'),
-										   datetime.datetime.strptime('01-01-2019', '%d-%m-%Y')))
+										   datetime.datetime.strptime('01-01-2020	', '%d-%m-%Y')))
 
 	# Convert GDP to billions
 	jap_gdpb_df = jap_decade_df.withColumn(
@@ -298,7 +298,7 @@ def main():
 	# fetch data for the last 20 years
 	uk_decade_df = uk_notnull_df.where(
 		uk_notnull_df['DATE'].between(datetime.datetime.strptime('01-01-1999', '%d-%m-%Y'),
-										   datetime.datetime.strptime('01-01-2019', '%d-%m-%Y')))
+										   datetime.datetime.strptime('01-01-2020	', '%d-%m-%Y')))
 
 	# Convert GDP to billions
 	uk_gdpb_df = uk_decade_df.withColumn(
