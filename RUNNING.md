@@ -10,7 +10,7 @@ Below code files are stored in the "src" folder in GitHub and in "ProjectCode" i
 4. spark-submit 4.GDP+MT-analysis.py
 5. spark-submit 5.RetailTradeSales+Yahoo.py
 6. spark-submit 6.IMF+FDindex
-7. spark-submit 7.CPI-analysis.py
+7. spark-submit 7.CPI_analysis.py
 8. spark-submit 8.GDP-HoursWorked.py
 9. spark-submit 9.TSX+Business.py
 10. spark-submit 10.RetailTrade-GDPvsSales.py
