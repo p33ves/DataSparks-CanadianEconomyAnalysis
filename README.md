@@ -48,29 +48,29 @@ c) Yahoo finance TSX Data for stocks (2000 - 2020)
 https://finance.yahoo.com/quote/%5EGSPTSE/history?period1=948672000&period2=1603497600&interval=1d&filter=history&frequency=1d&includeAdjustedClose=true  
 4. Economic Data, Federal Reserve Bank of St. Louis
 GDP data of 10 major countries in the world:
-a) Canada
-https://fred.stlouisfed.org/series/MKTGDPCAA646NWDB
-b) US
-https://fred.stlouisfed.org/series/FYGDP
-c) India
-https://fred.stlouisfed.org/series/MKTGDPINA646NWDB
-d) France
-https://fred.stlouisfed.org/series/MKTGDPFRA646NWDB
-e) Japan
-https://fred.stlouisfed.org/series/MKTGDPJPA646NWDB
-f) Germany
-https://fred.stlouisfed.org/series/MKTGDPDEA646NWDB
-g) UK
-https://fred.stlouisfed.org/series/MKTGDPGBA646NWDB
-h) Brazil
-https://fred.stlouisfed.org/series/MKTGDPBRA646NWDB
-i) Italy 
-https://fred.stlouisfed.org/series/MKTGDPITA646NWDB
-j) China
-https://fred.stlouisfed.org/series/MKTGDPCNA646NWDB
+a) Canada  
+https://fred.stlouisfed.org/series/MKTGDPCAA646NWDB  
+b) US  
+https://fred.stlouisfed.org/series/FYGDP  
+c) India  
+https://fred.stlouisfed.org/series/MKTGDPINA646NWDB  
+d) France  
+https://fred.stlouisfed.org/series/MKTGDPFRA646NWDB  
+e) Japan  
+https://fred.stlouisfed.org/series/MKTGDPJPA646NWDB  
+f) Germany  
+https://fred.stlouisfed.org/series/MKTGDPDEA646NWDB  
+g) UK  
+https://fred.stlouisfed.org/series/MKTGDPGBA646NWDB  
+h) Brazil  
+https://fred.stlouisfed.org/series/MKTGDPBRA646NWDB  
+i) Italy  
+https://fred.stlouisfed.org/series/MKTGDPITA646NWDB  
+j) China  
+https://fred.stlouisfed.org/series/MKTGDPCNA646NWDB  
 
-Technologies : Spark (RDD/Dataframes) with Amazon Web Services :  
+Technologies : Spark (RDD/Dataframes) with Amazon Web Services :    
 -> AWS-EMR for ETL and processing  
 -> AWS-S3 for storage  
 -> AWS-QuickSight for data visualization and dashboard creation  
--> Pandas and Scikit-learn libraries for GDP prediction
+-> Pandas and Scikit-learn libraries for GDP prediction  
