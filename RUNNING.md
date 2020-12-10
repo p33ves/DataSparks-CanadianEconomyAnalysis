@@ -35,3 +35,4 @@ sudo pip-3.7 install boto3
 where 3.7 is the python version in the node.
 
 d) The files from the output folder in S3 bucket "mysparks" is loaded into a different S3 bucket called "datasparks-output". This new S3 bucket is linked with the AWS QuickSight Tool for data visualization and Dashboard creation.
+e) The GDP prediction code in Jupyter Notebook of EMR cluster is automatically created as S3 object and pushed to "notebooks" folder in Git repo.
