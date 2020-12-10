@@ -1,1 +1,3 @@
-The CSV data from Statistics Canada website is too large to be stored on GitHub. While running the project code, the StatCan data gets automatically downloaded from the website on execution of the python code "1.get_statcan_data.py"
+The CSV data from Statistics Canada website is too large to be stored on GitHub.
+While running the project code, the StatCan data gets automatically downloaded from the website, into "../data/raw/statcan/.." 
+on execution of the python code "1.get_statcan_data.py"
