@@ -21,13 +21,13 @@ https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810000401
 c) International Merchandise Trade by commodity, monthly :  
 https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1210012101  
 d) Retail trade sales by province and territory :  
-https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=2010000801  
-e) Manufacturers’ sales, inventories, and orders, by industry :  
-https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1610004701  
+https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=2010000801 
+e) Detailed information on confirmed cases of COVID-19, Public Health Agency of Canada 
+https://open.canada.ca/data/en/dataset/287bf238-cc87-41e7-a5e2-78bc5d5ae97a
 f) Actual hours worked at main job, by industry, monthly :  
 https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028901  
-g) Average weekly earnings by industry, annually :  
-https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410020401  
+g) TSX Statistics
+https://open.canada.ca/data/en/dataset/0e1e57aa-e664-41b5-a69f-d814d4407d62
 h) Detailed household final consumption expenditure, Canada, quarterly :   
 https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3610012401  
 
@@ -73,4 +73,4 @@ Technologies : Spark (RDD/Dataframes) with Amazon Web Services :
 -> AWS-EMR for ETL and processing  
 -> AWS-S3 for storage  
 -> AWS-QuickSight for data visualization and dashboard creation  
--> Pandas and Scikit-learn libraries for GDP predction
+-> Pandas and Scikit-learn libraries for GDP prediction
