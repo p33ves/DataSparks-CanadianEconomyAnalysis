@@ -1,6 +1,6 @@
 # DataSparks - Pre and Post Covid-19 Canadian Economy Analysis
 
-## BIG DATA LAB PROJECT PROPOSAL
+## CMPT-732 BIG DATA-1 LAB PROJECT PROPOSAL
 
 ### TITLE : Pre and Post Covid-19 analysis of Canadian Economy  
 ### TEAM - DataSparks : Raksha Harish, Vignesh Perumal, Anjali Thomas  
