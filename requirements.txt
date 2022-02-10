@@ -16,7 +16,7 @@ jmespath==0.10.0
 mock==4.0.2
 multiprocess==0.70.11.1
 numexpr==2.7.1
-numpy==1.19.3
+numpy==1.21.0
 packaging==20.4
 pandas==1.1.4
 path==15.0.0
